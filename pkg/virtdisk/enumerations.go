@@ -145,3 +145,18 @@ const (
 	ResizeVirtualDiskFlagAllowUnsafeVirtualSize          ResizeVirtualDiskFlag = 0x1
 	ResizeVirtualDiskFlagResizeToSmallestSafeVirtualSize ResizeVirtualDiskFlag = 0x2
 )
+
+type VirtualDiskAccessMask uint32
+
+const (
+	VirtualDiskAccessNone     VirtualDiskAccessMask = 0x00000000
+	VirtualDiskAccessAttachRo VirtualDiskAccessMask = 0x00010000
+	VirtualDiskAccessAttachRw VirtualDiskAccessMask = 0x00020000
+	VirtualDiskAccessDetach   VirtualDiskAccessMask = 0x00040000
+	VirtualDiskAccessGetInfo  VirtualDiskAccessMask = 0x00080000
+	VirtualDiskAccessCreate   VirtualDiskAccessMask = 0x00100000
+	VirtualDiskAccessMetaops  VirtualDiskAccessMask = 0x00200000
+	VirtualDiskAccessRead     VirtualDiskAccessMask = 0x000d0000
+	VirtualDiskAccessAll      VirtualDiskAccessMask = 0x003f0000
+	VirtualDiskAccessWritable VirtualDiskAccessMask = 0x00320000
+)
