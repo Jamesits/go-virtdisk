@@ -157,3 +157,20 @@ type QueryChangesVirtualDiskRange struct {
 	ByteLength uint64
 	Reserved   uint64
 }
+
+type RawScsiVirtualDiskParametersV1 struct {
+	Version
+	RSVDHandle         bool
+	DataIn             uint8
+	CdbLength          uint8
+	SenseInfoLength    uint8
+	SrbFlags           uint32
+	DataTransferLength uint32
+	DataBuffer         uintptr
+	SenseInfo          *uint8
+	Cdb                *uint8
+}
+
+type RawScsiVirtualDiskResponseV1 struct {
+	Version
+}
