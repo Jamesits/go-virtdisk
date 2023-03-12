@@ -1,26 +1,26 @@
 package ioctl
 
-type IoctlMethod uint32
+type Method uint32
 
 const (
-	MethodBuffered           IoctlMethod = 0
-	MethodInDirect           IoctlMethod = 1
-	MethodDirectToHardware   IoctlMethod = 1
-	MethodOutDirect          IoctlMethod = 2
-	MethodDirectFromHardware IoctlMethod = 2
-	MethodNeither            IoctlMethod = 3
+	MethodBuffered           Method = 0
+	MethodInDirect           Method = 1
+	MethodDirectToHardware   Method = 1
+	MethodOutDirect          Method = 2
+	MethodDirectFromHardware Method = 2
+	MethodNeither            Method = 3
 )
 
-type IoctlAccess uint32
+type Access uint32
 
 const (
-	FileAnyAccess     IoctlAccess = 0
-	FileSpecialAccess IoctlAccess = FileAnyAccess
-	FileReadAccess    IoctlAccess = 0x0001
-	FileWriteAccess   IoctlAccess = 0x0002
+	FileAnyAccess     Access = 0
+	FileSpecialAccess Access = FileAnyAccess
+	FileReadAccess    Access = 0x0001
+	FileWriteAccess   Access = 0x0002
 )
 
-func CtlCode(DeviceType DeviceType, Function uint32, Method IoctlMethod, Access IoctlAccess) uint32 {
+func CtlCode(DeviceType DeviceType, Function uint32, Method Method, Access Access) uint32 {
 	// devioctl.h
 	// https://www.pinvoke.net/default.aspx/kernel32/CTL_CODE.html
 

@@ -114,6 +114,12 @@ func TestCreateVhdx(t *testing.T) {
 	)
 	assert.NoError(t, err)
 
+	// FIXME: wait for the MSR partition arrival??? HOW???
+	// https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ni-winioctl-ioctl_disk_create_disk#remarks
+	// https://github.com/pbatard/rufus/blob/ca84a4f6c5f24891ffbe2834648bff0120bfc4e3/src/drive.c#L2542
+
+	// Partition the disk
+
 	// DetachVirtualDisk
 	ret1, _, err = virtdisk.DetachVirtualDisk.Call(
 		handle,

@@ -1,7 +1,8 @@
 package virtdisk
 
 // Notes:
-// - assuming uuid.UUID equals a [16]byte in the memory (which is not really guaranteed?)
+// - Assuming uuid.UUID equals a [16]byte in the memory (which is not really guaranteed?)
+// - Golang struct padding rules are the same with C#'s LayoutKind.Sequential
 //
 // Types conversion:
 // - UCHAR -> uint8
