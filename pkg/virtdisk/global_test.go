@@ -7,6 +7,8 @@ import (
 	"testing"
 )
 
+const intPtrZero = uintptr(0)
+
 var temporaryDirectory string
 var d Virtdisk
 

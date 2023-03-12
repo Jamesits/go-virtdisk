@@ -23,16 +23,16 @@ func TestCreateVhd(t *testing.T) {
 		Version:     Version{Version: 1},
 		MaximumSize: 67108864,
 	}
-	handle := uintptr(0)
+	handle := intPtrZero
 	ret1, _, err = d.CreateVirtualDisk.Call(
 		uintptr(unsafe.Pointer(&vsType)),   // VirtualStorageType
 		uintptr(unsafe.Pointer(path)),      // Path
 		uintptr(VirtualDiskAccessCreate),   // VirtualDiskAccessMask
-		uintptr(0),                         // SecurityDescriptor
+		intPtrZero,                         // SecurityDescriptor
 		uintptr(CreateVirtualDiskFlagNone), // Flags
-		uintptr(0),                         // ProviderSpecificFlags
+		intPtrZero,                         // ProviderSpecificFlags
 		uintptr(unsafe.Pointer(&param)),    // Parameters
-		uintptr(0),                         // Overlapped
+		intPtrZero,                         // Overlapped
 		uintptr(unsafe.Pointer(&handle)),   // Handle
 	)
 	fmt.Printf("handle = %d\n", handle)

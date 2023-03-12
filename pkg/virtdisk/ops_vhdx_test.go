@@ -25,16 +25,16 @@ func TestCreateVhdx(t *testing.T) {
 		UniqueId:    uuid.Nil,
 		MaximumSize: 67108864,
 	}
-	handle := uintptr(0)
+	handle := intPtrZero
 	ret1, _, err = d.CreateVirtualDisk.Call(
 		uintptr(unsafe.Pointer(&vsType)),   // VirtualStorageType
 		uintptr(unsafe.Pointer(path)),      // Path
 		uintptr(VirtualDiskAccessNone),     // VirtualDiskAccessMask (must be none if using struct v2)
-		uintptr(0),                         // SecurityDescriptor
+		intPtrZero,                         // SecurityDescriptor
 		uintptr(CreateVirtualDiskFlagNone), // Flags
-		uintptr(0),                         // ProviderSpecificFlags
+		intPtrZero,                         // ProviderSpecificFlags
 		uintptr(unsafe.Pointer(&param)),    // Parameters
-		uintptr(0),                         // Overlapped
+		intPtrZero,                         // Overlapped
 		uintptr(unsafe.Pointer(&handle)),   // Handle
 	)
 	fmt.Printf("handle = %d\n", handle)
@@ -44,21 +44,21 @@ func TestCreateVhdx(t *testing.T) {
 
 	// AttachVirtualDisk
 	ret1, _, err = d.AttachVirtualDisk.Call(
-		uintptr(unsafe.Pointer(handle)), // VirtualDiskHandle
-		uintptr(0),                      // SecurityDescriptor
+		handle,     // VirtualDiskHandle
+		intPtrZero, // SecurityDescriptor
 		uintptr(AttachVirtualDiskFlagNoDriveLetter|AttachVirtualDiskFlagPermanentLifetime), // Flags
-		uintptr(0), // ProviderSpecificFlags
-		uintptr(0), // Parameters
-		uintptr(0), // Overlapped
+		intPtrZero, // ProviderSpecificFlags
+		intPtrZero, // Parameters
+		intPtrZero, // Overlapped
 	)
 	assert.ErrorIs(t, err, windows.ERROR_SUCCESS)
 	assert.Zero(t, ret1)
 
 	// DetachVirtualDisk
 	ret1, _, err = d.DetachVirtualDisk.Call(
-		uintptr(unsafe.Pointer(handle)),
+		handle,
 		uintptr(DetachVirtualDiskFlagNone),
-		uintptr(0),
+		intPtrZero,
 	)
 	assert.ErrorIs(t, err, windows.ERROR_SUCCESS)
 	assert.Zero(t, ret1)
