@@ -40,7 +40,7 @@ type DriveLayoutInformationGpt struct {
 type DriveLayoutInformationMbr struct {
 	Signature uint32
 	CheckSum  uint32
-	_         [28]uint8
+	_         [32]uint8
 }
 
 type DriveLayoutInformationExMbr struct {
@@ -75,7 +75,7 @@ type PartitionInformationMbr struct {
 	RecognizedPartition bool
 	HiddenSectors       uint32
 	PartitionId         uuid.UUID
-	_                   [89]uint8
+	_                   [85]uint8
 }
 
 type PartitionInformationExGpt struct {

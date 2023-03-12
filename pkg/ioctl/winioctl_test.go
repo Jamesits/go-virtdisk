@@ -6,12 +6,12 @@ import (
 	"unsafe"
 )
 
-func assertSameSize[T1 any, T2 any](t *testing.T) {
-	assert.EqualValues(t, unsafe.Sizeof(new(T1)), unsafe.Sizeof(new(T2)))
+func assertSameSize[Expected any, Actual any](t *testing.T) {
+	assert.EqualValues(t, unsafe.Sizeof(*new(Expected)), unsafe.Sizeof(*new(Actual)))
 }
 
 func TestUnionPadding(t *testing.T) {
-	assertSameSize[CreateDiskMbr, CreateDiskGpt](t)
-	assertSameSize[DriveLayoutInformationMbr, DriveLayoutInformationGpt](t)
-	assertSameSize[PartitionInformationMbr, PartitionInformationGpt](t)
+	assertSameSize[CreateDiskGpt, CreateDiskMbr](t)
+	assertSameSize[DriveLayoutInformationGpt, DriveLayoutInformationMbr](t)
+	assertSameSize[PartitionInformationGpt, PartitionInformationMbr](t)
 }
