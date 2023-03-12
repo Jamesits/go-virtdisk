@@ -11,6 +11,8 @@ github.com/jamesits/goinvoke v1.2.0 h1:r8FO/DsOy9kHmAz8C/mbsry0rFrFfueUZqSzNLr7T
 github.com/jamesits/goinvoke v1.2.0/go.mod h1:i46CPzFO1tKJHhGOHAM9FA9Iwk8dZhutznqBcm+dyJ4=
 github.com/jamesits/libiferr v0.0.0-20230309021041-cd95f610f06c h1:4h1MM0bnmnIEo8zD3C/dbqtuWqgB1HsSRMtgs3H+qKQ=
 github.com/jamesits/libiferr v0.0.0-20230309021041-cd95f610f06c/go.mod h1:iUe/sccbSaXGAvK1n5Sl5aWZyYCJ5AJLMdAI4O0/5Ro=
+github.com/jamesits/libiferr v0.0.0-20230312171451-1e9fb117bfc7 h1:FzefG6AIDFhms6yW4gBcAcCYqZMlkphaTgRSftomXgo=
+github.com/jamesits/libiferr v0.0.0-20230312171451-1e9fb117bfc7/go.mod h1:6DKWewRcLtkPsGmFJskqIG+wtdkCEZjkjCZURlPg/zM=
 github.com/jamesits/nopadding v0.0.0-20230305153248-9d45ac5c9f7d h1:L+7IaePX74LZs2rAgx9EWzXO6ikBgjyn/gX7UUu1EBM=
 github.com/jamesits/nopadding v0.0.0-20230305153248-9d45ac5c9f7d/go.mod h1:VWYlpOkxQgqEtkWz9tscz6+6eXcrE1Evof6A7LXXNPQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

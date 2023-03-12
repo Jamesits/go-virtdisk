@@ -15,7 +15,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
-	github.com/jamesits/libiferr v0.0.0-20230309021041-cd95f610f06c // indirect
+	github.com/jamesits/libiferr v0.0.0-20230312171451-1e9fb117bfc7 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/mod v0.8.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
