@@ -93,37 +93,26 @@ func TestCreateVhdx(t *testing.T) {
 	// initialize the disk
 	// https://www.codeproject.com/script/Content/ViewAssociatedFile.aspx?rzp=%2FKB%2Fwinsdk%2FHard_drive_Information%2Fsmartsrc.zip&zep=SMART%2FDDKInclude%2Fntdddisk.h&obid=16671&obtid=2&ovid=1
 	ioctlDiskCreateDisk := ioctl.CtlCode(ioctl.FileDeviceDisk, 0x0016, ioctl.MethodBuffered, ioctl.FileReadAccess|ioctl.FileWriteAccess)
-	gpt := ioctl.CreateDiskGpt{
+	//createDisk := ioctl.CreateDiskMbr{
+	//	PartitionStyle: ioctl.PartitionStyleMBR,
+	//	Signature:      1,
+	//}
+	createDisk := ioctl.CreateDiskGpt{
 		PartitionStyle:    ioctl.PartitionStyleGPT,
-		DiskId:            uuid.New(),
+		DiskId:            uuid.Nil, // a random UUID will result in "The request is not supported."
 		MaxPartitionCount: 128,
 	}
 	err = windows.DeviceIoControl(
 		diskHandle,
 		ioctlDiskCreateDisk,
-		(*byte)(unsafe.Pointer(&gpt)),
-		uint32(unsafe.Sizeof(gpt)),
+		(*byte)(unsafe.Pointer(&createDisk)),
+		uint32(unsafe.Sizeof(createDisk)),
 		nil,
 		0,
 		nil,
 		nil,
 	)
 	assert.NoError(t, err)
-	//mbr := ioctl.CreateDiskMbr{
-	//	PartitionStyle: ioctl.PartitionStyleMBR,
-	//	Signature:      1,
-	//}
-	//err = windows.DeviceIoControl(
-	//	diskHandle,
-	//	ioctlDiskCreateDisk,
-	//	(*byte)(unsafe.Pointer(&mbr)),
-	//	uint32(unsafe.Sizeof(mbr)),
-	//	nil,
-	//	0,
-	//	nil,
-	//	nil,
-	//)
-	//assert.NoError(t, err)
 
 	// DetachVirtualDisk
 	ret1, _, err = virtdisk.DetachVirtualDisk.Call(
