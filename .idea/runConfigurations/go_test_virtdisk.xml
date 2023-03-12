@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go test virtdisk" type="GoTestRunConfiguration" factoryName="Go Test">
+    <module name="go-virtdisk" />
+    <working_directory value="$PROJECT_DIR$/pkg/virtdisk" />
+    <sudo value="true" />
+    <root_directory value="$PROJECT_DIR$" />
+    <kind value="PACKAGE" />
+    <package value="github.com/jamesits/go-virtdisk/pkg/virtdisk" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>
