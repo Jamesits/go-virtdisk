@@ -1,5 +1,7 @@
 package virtdisk
 
+import "github.com/google/uuid"
+
 // Notes:
 // - enum is by default uint16; v1_enum tagged enums are uint32.
 
@@ -146,6 +148,24 @@ const (
 	ResizeVirtualDiskFlagResizeToSmallestSafeVirtualSize ResizeVirtualDiskFlag = 0x2
 )
 
+type VirtualDiskInfoProviderSubtype uint32
+
+const (
+	Fixed                 VirtualDiskInfoProviderSubtype = 2
+	DynamicallyExpandable VirtualDiskInfoProviderSubtype = 3
+	Differencing          VirtualDiskInfoProviderSubtype = 4
+)
+
+type VirtualStorageTypeDeviceType uint32
+
+const (
+	VirtualStorageTypeDeviceUnknown VirtualStorageTypeDeviceType = 0
+	VirtualStorageTypeDeviceIso     VirtualStorageTypeDeviceType = 1
+	VirtualStorageTypeDeviceVhd     VirtualStorageTypeDeviceType = 2
+	VirtualStorageTypeDeviceVhdx    VirtualStorageTypeDeviceType = 3
+	VirtualStorageTypeDeviceVhdSet  VirtualStorageTypeDeviceType = 4
+)
+
 type VirtualDiskAccessMask uint32
 
 const (
@@ -159,4 +179,16 @@ const (
 	VirtualDiskAccessRead     VirtualDiskAccessMask = 0x000d0000
 	VirtualDiskAccessAll      VirtualDiskAccessMask = 0x003f0000
 	VirtualDiskAccessWritable VirtualDiskAccessMask = 0x00320000
+)
+
+// UUID
+var (
+	VirtualStorageTypeVendorUnknown   = uuid.Nil
+	VirtualStorageTypeVendorMicrosoft = uuid.Must(uuid.FromBytes([]byte{
+		0xEC, 0x98, 0x4A, 0xEC,
+		0xA0, 0xF9,
+		0x47, 0xE9,
+		0x90, 0x1F,
+		0x71, 0x41, 0x5A, 0x66, 0x34, 0x5B,
+	}))
 )

@@ -4,6 +4,7 @@ package virtdisk
 // - assuming uuid.UUID equals a [16]byte in the memory (which is not really guaranteed?)
 //
 // Types conversion:
+// - UCHAR -> uint8
 // - ULONG -> uint32
 // - ULONGLONG -> uint64
 // - PCWSTR (const wchar_t*) -> *uint16 (should be []uint16, but...)
@@ -67,6 +68,23 @@ type CreateVirtualDiskParametersV2 struct {
 	ResiliencyGuid            uuid.UUID
 }
 
+type CreateVirtualDiskParametersV3 struct {
+	Version
+	UniqueId                  uuid.UUID
+	MaximumSize               uint64
+	BlockSizeInBytes          uint32
+	SectorSizeInBytes         uint32
+	PhysicalSectorSizeInBytes uint32
+	ParentPath                *uint16
+	SourcePath                *uint16
+	OpenFlags                 OpenVirtualDiskFlag
+	ParentVirtualStorageType  VirtualStorageType
+	SourceVirtualStorageType  VirtualStorageType
+	ResiliencyGuid            uuid.UUID
+	SourceLimitPath           *uint16
+	BackingStorageType        VirtualStorageType
+}
+
 type DeleteSnapshotVhdSetParametersV1 struct {
 	Version
 	SnapshotId uuid.UUID
@@ -113,7 +131,7 @@ type GetVirtualDiskInfoV6 struct {
 
 type GetVirtualDiskInfoV7 struct {
 	Version
-	ProviderSubtype uint32
+	ProviderSubtype VirtualDiskInfoProviderSubtype
 }
 
 type GetVirtualDiskInfoV8 struct {
@@ -305,6 +323,6 @@ type VirtualDiskProgress struct {
 }
 
 type VirtualStorageType struct {
-	DeviceId uint32
+	DeviceId VirtualStorageTypeDeviceType
 	VendorId uuid.UUID
 }
