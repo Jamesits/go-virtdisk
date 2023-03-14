@@ -3,6 +3,7 @@ package virtdisk
 import (
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/jamesits/go-bytebuilder"
 	"github.com/jamesits/go-virtdisk/pkg/ioctl"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/sys/windows"
@@ -119,6 +120,48 @@ func TestCreateVhdx(t *testing.T) {
 	// https://github.com/pbatard/rufus/blob/ca84a4f6c5f24891ffbe2834648bff0120bfc4e3/src/drive.c#L2542
 
 	// Partition the disk
+	partitionInformationEx := &bytebuilder.ByteBuilder{}
+	_, _ = partitionInformationEx.WriteObject(ioctl.DriveLayoutInformationExGpt{
+		DriveLayoutInformationEx: ioctl.DriveLayoutInformationEx{
+			PartitionStyle: 1,
+			PartitionCount: 1,
+		},
+		DriveLayoutInformationGpt: ioctl.DriveLayoutInformationGpt{
+			DiskId:               uuid.Nil,
+			StartingUsableOffset: 0,
+			UsableLength:         3342336,
+			MaxPartitionCount:    128,
+		},
+	})
+	_, _ = partitionInformationEx.WriteObject(ioctl.PartitionInformationExGpt{
+		PartitionInformationEx: ioctl.PartitionInformationEx{
+			PartitionStyle:     1,
+			StartingOffset:     1048576,
+			PartitionLength:    3342336 - 1048576,
+			PartitionNumber:    1,
+			RewritePartition:   true,
+			IsServicePartition: false,
+		},
+		PartitionInformationGpt: ioctl.PartitionInformationGpt{
+			PartitionType: uuid.MustParse("EBD0A0A2-B9E5-4433-87C0-68B6B72699C7"),
+			PartitionId:   uuid.Must(uuid.NewRandom()),
+			Attributes:    0,
+			Name:          [36]uint16{'t', 'e', 's', 't'},
+		},
+	})
+	ioctlDiskSetDriveLayoutEx := ioctl.CtlCode(ioctl.FileDeviceDisk, 0x0015, ioctl.MethodBuffered, ioctl.FileReadAccess|ioctl.FileWriteAccess)
+	b := partitionInformationEx.Bytes()
+	err = windows.DeviceIoControl(
+		diskHandle,
+		ioctlDiskSetDriveLayoutEx,
+		&b[0],
+		uint32(len(b)),
+		nil,
+		0,
+		nil,
+		nil,
+	)
+	assert.NoError(t, err)
 
 	// DetachVirtualDisk
 	ret1, _, err = virtdisk.DetachVirtualDisk.Call(
