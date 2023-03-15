@@ -9,6 +9,8 @@ github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+l
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
 github.com/jamesits/go-bytebuilder v1.0.0 h1:AZjSfdMEnicbGVHF+lWqUAeSUYhEsbx8Qpnqr0DoP0c=
 github.com/jamesits/go-bytebuilder v1.0.0/go.mod h1:9N2YVp0LUmqpUHKv1npuQKFlecf7aWcaRVNMXRwYhqw=
+github.com/jamesits/go-bytebuilder v1.1.1 h1:U2wrMfgyOFYP78RComKhpXCfQlzP6ozkAD8MY53Z2t0=
+github.com/jamesits/go-bytebuilder v1.1.1/go.mod h1:9N2YVp0LUmqpUHKv1npuQKFlecf7aWcaRVNMXRwYhqw=
 github.com/jamesits/goinvoke v1.2.0 h1:r8FO/DsOy9kHmAz8C/mbsry0rFrFfueUZqSzNLr7T9A=
 github.com/jamesits/goinvoke v1.2.0/go.mod h1:i46CPzFO1tKJHhGOHAM9FA9Iwk8dZhutznqBcm+dyJ4=
 github.com/jamesits/libiferr v0.0.0-20230309021041-cd95f610f06c h1:4h1MM0bnmnIEo8zD3C/dbqtuWqgB1HsSRMtgs3H+qKQ=

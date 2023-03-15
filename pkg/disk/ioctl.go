@@ -1,4 +1,4 @@
-package ioctl
+package disk
 
 type Method uint32
 
@@ -26,3 +26,7 @@ func CtlCode(DeviceType DeviceType, Function uint32, Method Method, Access Acces
 
 	return (uint32(DeviceType) << 16) | (uint32(Access) << 14) | (Function << 2) | (uint32(Method))
 }
+
+var (
+	ioctlDiskCreateDisk = CtlCode(FileDeviceDisk, 0x0016, MethodBuffered, FileReadAccess|FileWriteAccess)
+)

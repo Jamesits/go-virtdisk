@@ -33,7 +33,7 @@ func TestCreateVhd(t *testing.T) {
 		intPtrZero,                         // ProviderSpecificFlags
 		uintptr(unsafe.Pointer(&param)),    // Parameters
 		intPtrZero,                         // Overlapped
-		uintptr(unsafe.Pointer(&handle)),   // Handle
+		uintptr(unsafe.Pointer(&handle)),   // handle
 	)
 	fmt.Printf("handle = %v\n", handle)
 	assert.ErrorIs(t, err, windows.ERROR_SUCCESS)

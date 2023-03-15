@@ -1,4 +1,4 @@
-package ioctl
+package disk
 
 import "github.com/google/uuid"
 

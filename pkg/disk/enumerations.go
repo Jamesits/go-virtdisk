@@ -1,4 +1,4 @@
-package ioctl
+package disk
 
 type DeviceType uint32
 

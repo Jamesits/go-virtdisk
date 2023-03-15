@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/jamesits/go-bytebuilder"
-	"github.com/jamesits/go-virtdisk/pkg/ioctl"
+	"github.com/jamesits/go-virtdisk/pkg/disk"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/sys/windows"
 	"log"
@@ -38,7 +38,7 @@ func TestCreateVhdx(t *testing.T) {
 		intPtrZero,                         // ProviderSpecificFlags
 		uintptr(unsafe.Pointer(&param)),    // Parameters
 		intPtrZero,                         // Overlapped
-		uintptr(unsafe.Pointer(&handle)),   // Handle
+		uintptr(unsafe.Pointer(&handle)),   // handle
 	)
 	fmt.Printf("handle = %v\n", handle)
 	assert.ErrorIs(t, err, windows.ERROR_SUCCESS)
@@ -78,6 +78,7 @@ func TestCreateVhdx(t *testing.T) {
 		uintptr(unsafe.Pointer(&virtualDiskPhysicalPathSize)),
 		uintptr(unsafe.Pointer(&virtualDiskPhysicalPathUtf16[0])),
 	)
+	assert.ErrorIs(t, err, windows.ERROR_SUCCESS)
 	virtualDiskPhysicalPath := windows.UTF16ToString(virtualDiskPhysicalPathUtf16)
 	log.Printf("physical path: %s\n", virtualDiskPhysicalPath)
 
@@ -93,13 +94,13 @@ func TestCreateVhdx(t *testing.T) {
 
 	// initialize the disk
 	// https://www.codeproject.com/script/Content/ViewAssociatedFile.aspx?rzp=%2FKB%2Fwinsdk%2FHard_drive_Information%2Fsmartsrc.zip&zep=SMART%2FDDKInclude%2Fntdddisk.h&obid=16671&obtid=2&ovid=1
-	ioctlDiskCreateDisk := ioctl.CtlCode(ioctl.FileDeviceDisk, 0x0016, ioctl.MethodBuffered, ioctl.FileReadAccess|ioctl.FileWriteAccess)
-	//createDisk := ioctl.CreateDiskMbr{
-	//	PartitionStyle: ioctl.PartitionStyleMBR,
+	ioctlDiskCreateDisk := disk.CtlCode(disk.FileDeviceDisk, 0x0016, disk.MethodBuffered, disk.FileReadAccess|disk.FileWriteAccess)
+	//createDisk := disk.CreateDiskMbr{
+	//	PartitionStyle: disk.PartitionStyleMBR,
 	//	Signature:      1,
 	//}
-	createDisk := ioctl.CreateDiskGpt{
-		PartitionStyle:    ioctl.PartitionStyleGPT,
+	createDisk := disk.CreateDiskGpt{
+		PartitionStyle:    disk.PartitionStyleGPT,
 		DiskId:            uuid.Nil, // a random UUID will result in "The request is not supported."
 		MaxPartitionCount: 128,
 	}
@@ -121,20 +122,20 @@ func TestCreateVhdx(t *testing.T) {
 
 	// Partition the disk
 	partitionInformationEx := &bytebuilder.ByteBuilder{}
-	_, _ = partitionInformationEx.WriteObject(ioctl.DriveLayoutInformationExGpt{
-		DriveLayoutInformationEx: ioctl.DriveLayoutInformationEx{
+	_, _ = partitionInformationEx.WriteObject(disk.DriveLayoutInformationExGpt{
+		DriveLayoutInformationEx: disk.DriveLayoutInformationEx{
 			PartitionStyle: 1,
 			PartitionCount: 1,
 		},
-		DriveLayoutInformationGpt: ioctl.DriveLayoutInformationGpt{
+		DriveLayoutInformationGpt: disk.DriveLayoutInformationGpt{
 			DiskId:               uuid.Nil,
 			StartingUsableOffset: 0,
 			UsableLength:         3342336,
 			MaxPartitionCount:    128,
 		},
 	})
-	_, _ = partitionInformationEx.WriteObject(ioctl.PartitionInformationExGpt{
-		PartitionInformationEx: ioctl.PartitionInformationEx{
+	_, _ = partitionInformationEx.WriteObject(disk.PartitionInformationExGpt{
+		PartitionInformationEx: disk.PartitionInformationEx{
 			PartitionStyle:     1,
 			StartingOffset:     1048576,
 			PartitionLength:    3342336 - 1048576,
@@ -142,14 +143,14 @@ func TestCreateVhdx(t *testing.T) {
 			RewritePartition:   true,
 			IsServicePartition: false,
 		},
-		PartitionInformationGpt: ioctl.PartitionInformationGpt{
+		PartitionInformationGpt: disk.PartitionInformationGpt{
 			PartitionType: uuid.MustParse("EBD0A0A2-B9E5-4433-87C0-68B6B72699C7"),
 			PartitionId:   uuid.Must(uuid.NewRandom()),
 			Attributes:    0,
 			Name:          [36]uint16{'t', 'e', 's', 't'},
 		},
 	})
-	ioctlDiskSetDriveLayoutEx := ioctl.CtlCode(ioctl.FileDeviceDisk, 0x0015, ioctl.MethodBuffered, ioctl.FileReadAccess|ioctl.FileWriteAccess)
+	ioctlDiskSetDriveLayoutEx := disk.CtlCode(disk.FileDeviceDisk, 0x0015, disk.MethodBuffered, disk.FileReadAccess|disk.FileWriteAccess)
 	b := partitionInformationEx.Bytes()
 	err = windows.DeviceIoControl(
 		diskHandle,
