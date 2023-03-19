@@ -1,6 +1,7 @@
 package virtdisk
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/jamesits/go-bytebuilder"
@@ -83,7 +84,7 @@ func TestCreateVhdx(t *testing.T) {
 	log.Printf("physical path: %s\n", virtualDiskPhysicalPath)
 
 	// get a handle to the disk
-	diskHandle, err := windows.CreateFile(&virtualDiskPhysicalPathUtf16[0], windows.GENERIC_READ|windows.GENERIC_WRITE, windows.FILE_SHARE_READ|windows.FILE_SHARE_WRITE, nil, windows.OPEN_EXISTING, 0, windows.Handle(0))
+	diskHandle, err := windows.CreateFile(&virtualDiskPhysicalPathUtf16[0], windows.GENERIC_READ|windows.GENERIC_WRITE, windows.FILE_SHARE_READ|windows.FILE_SHARE_WRITE, nil, windows.OPEN_EXISTING, windows.FILE_ATTRIBUTE_NORMAL|windows.FILE_FLAG_BACKUP_SEMANTICS, windows.Handle(0))
 	assert.NoError(t, err)
 	assert.NotEqualValues(t, windows.InvalidHandle, diskHandle)
 	defer func() {
@@ -163,6 +164,56 @@ func TestCreateVhdx(t *testing.T) {
 		nil,
 	)
 	assert.NoError(t, err)
+
+	// GetStorageDependencyInformation
+	// determine required size
+	// note: initial request buffer size must >= struct header + at least 1 union VLA member.
+	// Sending only the header results in ERROR_INVALID_PARAMETER (0x57).
+	// Sending a buffer with sufficient size but version set to 0 results in ERROR_INVALID_LEVEL (0x7c).
+	depSize := uint32(unsafe.Sizeof(StorageDependencyInfo{}) + unsafe.Sizeof(StorageDependencyInfoType2{}))
+	bufferStorageDependencyInformationIn := make([]byte, depSize)
+	versionOnly, err := bytebuilder.Marshal(&Version{Version: 2})
+	assert.NoError(t, err)
+	copy(bufferStorageDependencyInformationIn, versionOnly)
+	bufSize := uint32(0)
+	ret1, _, _ = virtdisk.GetStorageDependencyInformation.Call(
+		uintptr(diskHandle),
+		uintptr(GetStorageDependencyFlagHostVolumes|GetStorageDependencyFlagDiskHandle),
+		uintptr(depSize),
+		uintptr(unsafe.Pointer(&bufferStorageDependencyInformationIn[0])),
+		uintptr(unsafe.Pointer(&bufSize)),
+	)
+	assert.EqualValues(t, 122, ret1) // should return ERROR_INSUFFICIENT_BUFFER
+	// request actual information
+	bufferStorageDependencyInformationIn = make([]byte, bufSize)
+	copy(bufferStorageDependencyInformationIn, versionOnly)
+	ret1, _, _ = virtdisk.GetStorageDependencyInformation.Call(
+		uintptr(diskHandle),
+		uintptr(GetStorageDependencyFlagHostVolumes|GetStorageDependencyFlagDiskHandle),
+		uintptr(bufSize),
+		uintptr(unsafe.Pointer(&bufferStorageDependencyInformationIn[0])),
+		uintptr(unsafe.Pointer(&bufSize)),
+	)
+	assert.EqualValues(t, 0, ret1)
+	// unmarshal the header
+	var depInfo StorageDependencyInfo
+	depReader := bytes.NewReader(bufferStorageDependencyInformationIn)
+	readLen, err := bytebuilder.ReadPartial(depReader, &depInfo)
+	assert.EqualValues(t, unsafe.Sizeof(depInfo), readLen)
+	assert.NoError(t, err)
+	assert.Less(t, uint32(0), depInfo.NumberEntries)
+	// unmarshal the structs
+	for i := uint32(0); i < depInfo.NumberEntries; i++ {
+		var dep StorageDependencyInfoType2
+		readLen, err := bytebuilder.ReadPartial(depReader, &dep)
+		assert.EqualValues(t, unsafe.Sizeof(dep), readLen)
+		assert.NoError(t, err)
+		fmt.Printf("dep %d: %v\n", i, dep)
+		fmt.Printf("  DependencyDeviceName=%s\n", windows.UTF16PtrToString(dep.DependencyDeviceName))
+		fmt.Printf("  HostVolumeName=%s\n", windows.UTF16PtrToString(dep.HostVolumeName))
+		fmt.Printf("  DependentVolumeName=%s\n", windows.UTF16PtrToString(dep.DependentVolumeName))
+		fmt.Printf("  DependentVolumeRelativePath=%s\n", windows.UTF16PtrToString(dep.DependentVolumeRelativePath))
+	}
 
 	// DetachVirtualDisk
 	ret1, _, err = virtdisk.DetachVirtualDisk.Call(

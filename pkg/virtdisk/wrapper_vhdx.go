@@ -217,6 +217,46 @@ func FromSource(path string, sourceDisk uint32, dynamic bool, blockSizeBytes uin
 	return ret, nil
 }
 
+func FromDiskId(sourceDisk uint32) (ret *VHDX, err error) {
+	win32SourcePath, err := windows.UTF16PtrFromString(fmt.Sprintf("\\\\.\\PhysicalDrive%d", sourceDisk))
+	if err != nil {
+		return nil, err
+	}
+
+	// get a handle to the disk
+	// TODO: refactor this using the disk package
+	diskHandle, err := windows.CreateFile(win32SourcePath, windows.GENERIC_READ, windows.FILE_SHARE_READ, nil, windows.OPEN_EXISTING, 0, windows.Handle(0))
+	if err != nil {
+		return nil, err
+	}
+	defer windows.CloseHandle(diskHandle)
+
+	// query the dependencies
+	// https://stackoverflow.com/a/14175877
+	// https://github.com/microsoft/Windows-classic-samples/blob/7cbd99ac1d2b4a0beffbaba29ea63d024ceff700/Samples/Hyper-V/Storage/cpp/GetStorageDependencyInformation.cpp
+	var bufSize uint64
+	_, _, err = virtdisk.GetStorageDependencyInformation.Call(
+		uintptr(diskHandle),
+		uintptr(GetStorageDependencyFlagDiskHandle),
+		intPtrZero,
+		intPtrZero,
+		uintptr(unsafe.Pointer(&bufSize)),
+	)
+	if err != windows.ERROR_SUCCESS {
+		return nil, err
+	}
+	b := make([]byte, bufSize)
+	_, _, err = virtdisk.GetStorageDependencyInformation.Call(
+		uintptr(diskHandle),
+		uintptr(GetStorageDependencyFlagDiskHandle),
+		uintptr(bufSize),
+		uintptr(unsafe.Pointer(&b[0])),
+		uintptr(unsafe.Pointer(&bufSize)),
+	)
+
+	return nil, nil
+}
+
 // Mount the VHDX.
 // Implements:
 // - Mount-VHD
