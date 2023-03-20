@@ -25,6 +25,9 @@ func init() {
 }
 
 // GetDisks returns the device path of the disk.
+// The returned string is a object under `\GLOBAL??`. Examples:
+// - VHDX: `\\?\scsi#disk&ven_msft&prod_virtual_disk#2&1f4adffe&0&000001#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}`
+// - NVMe disk: `\\?\scsi#disk&ven_msft&prod_virtual_disk#2&1f4adffe&0&000001#{53f56307-b6bf-11d0-94f2-00a0c91efb8b}`
 func GetDisks() (ret []string, err error) {
 	// https://stackoverflow.com/a/18183115
 	handle, err := windows.SetupDiGetClassDevsEx(GuidDevInterfaceDisk, "", uintptr(0), windows.DIGCF_PRESENT|windows.DIGCF_DEVICEINTERFACE, windows.DevInfo(0), "")
@@ -91,6 +94,7 @@ func GetDisks() (ret []string, err error) {
 	return
 }
 
+// GetDiskNumber returns the PhysicalDrive number of the hard disk device.
 func GetDiskNumber(diskDevicePath string) (uint32, error) {
 	dp, err := windows.UTF16PtrFromString(diskDevicePath)
 	if err != nil {
@@ -131,6 +135,8 @@ func GetDiskNumber(diskDevicePath string) (uint32, error) {
 	return n.DeviceNumber, nil
 }
 
+// GetDiskKernelObjectPath returns the (symlink'd) kernel object name for the DR.
+// e.g. `\\.\PhysicalDrive0`
 func GetDiskKernelObjectPath(diskDevicePath string) (string, error) {
 	n, err := GetDiskNumber(diskDevicePath)
 	if err != nil {

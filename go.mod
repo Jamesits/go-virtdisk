@@ -13,8 +13,6 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/gentlemanautomaton/windevice v0.0.0-20230228225025-9f4f02d0964b // indirect
-	github.com/gentlemanautomaton/winguid v0.0.0-20190307223039-3f364f74ee74 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
