@@ -87,3 +87,22 @@ type PartitionInformationExMbr struct {
 	PartitionInformationEx
 	PartitionInformationMbr
 }
+
+type StorageDeviceNumber struct {
+	DeviceType      DeviceType
+	DeviceNumber    uint32
+	PartitionNumber uint32
+}
+
+// setupapi.h
+
+type SPDeviceInterfaceData struct {
+	Size               uint32
+	InterfaceClassGuid uuid.UUID
+	Flags              uint32
+	_                  uint64
+}
+
+type SPDeviceInterfaceDetailData struct {
+	Size uint32
+}

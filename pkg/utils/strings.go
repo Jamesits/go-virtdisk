@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/jamesits/go-bytebuilder"
 	"unicode/utf16"
 )
 
@@ -24,4 +25,8 @@ func UTF16ToStringSlice(s []uint16) (ret []string) {
 	}
 
 	return
+}
+
+func UTF16ByteArrayToStringSlice(s []byte) []string {
+	return UTF16ToStringSlice(bytebuilder.SliceCast[byte, uint16](s))
 }

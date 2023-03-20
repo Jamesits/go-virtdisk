@@ -1,6 +1,10 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/gentlemanautomaton/windevice v0.0.0-20230228225025-9f4f02d0964b h1:qAkdVwVQ+cwLaIFGyOBBfLm5XEjekOZsnZGyvlhLud8=
+github.com/gentlemanautomaton/windevice v0.0.0-20230228225025-9f4f02d0964b/go.mod h1:yZwIa7s4IOx8T2lQrgkG84UJDA+zWffM/ug93dkugEk=
+github.com/gentlemanautomaton/winguid v0.0.0-20190307223039-3f364f74ee74 h1:KBOUk7aWPrrx9pu4UntVtVJXWwLE1Z5w/vqOFLrsvhQ=
+github.com/gentlemanautomaton/winguid v0.0.0-20190307223039-3f364f74ee74/go.mod h1:w5CgCbxt8D1rCLKpdgBQLXc+19nItCmTwA8r+pDvlro=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/hashicorp/errwrap v1.0.0 h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/UYA=
@@ -9,6 +13,8 @@ github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+l
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
 github.com/jamesits/go-bytebuilder v1.4.0 h1:NxOpEoQGT8zTnUynxSVZY9n0wra/pK3a5KL/FCirG2E=
 github.com/jamesits/go-bytebuilder v1.4.0/go.mod h1:wS9bYtt98UeI5bPj9+fd04glRnnbDjn89UFb9FkdkrY=
+github.com/jamesits/go-bytebuilder v1.5.0 h1:qH4XnumsZhmVOFlgYKVJE08x8OhotBIjNsny2IWxRBg=
+github.com/jamesits/go-bytebuilder v1.5.0/go.mod h1:wS9bYtt98UeI5bPj9+fd04glRnnbDjn89UFb9FkdkrY=
 github.com/jamesits/goinvoke v1.2.0 h1:r8FO/DsOy9kHmAz8C/mbsry0rFrFfueUZqSzNLr7T9A=
 github.com/jamesits/goinvoke v1.2.0/go.mod h1:i46CPzFO1tKJHhGOHAM9FA9Iwk8dZhutznqBcm+dyJ4=
 github.com/jamesits/libiferr v0.0.0-20230312171451-1e9fb117bfc7 h1:FzefG6AIDFhms6yW4gBcAcCYqZMlkphaTgRSftomXgo=

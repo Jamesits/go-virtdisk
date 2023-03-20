@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/google/uuid v1.3.0
-	github.com/jamesits/go-bytebuilder v1.4.0
+	github.com/jamesits/go-bytebuilder v1.5.0
 	github.com/jamesits/goinvoke v1.2.0
 	github.com/jamesits/libiferr v0.0.0-20230312171451-1e9fb117bfc7
 	github.com/stretchr/testify v1.8.2
@@ -13,6 +13,8 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/gentlemanautomaton/windevice v0.0.0-20230228225025-9f4f02d0964b // indirect
+	github.com/gentlemanautomaton/winguid v0.0.0-20190307223039-3f364f74ee74 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

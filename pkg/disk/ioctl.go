@@ -28,5 +28,6 @@ func CtlCode(DeviceType DeviceType, Function uint32, Method Method, Access Acces
 }
 
 var (
-	ioctlDiskCreateDisk = CtlCode(FileDeviceDisk, 0x0016, MethodBuffered, FileReadAccess|FileWriteAccess)
+	ioctlDiskCreateDisk         = CtlCode(FileDeviceDisk, 0x0016, MethodBuffered, FileReadAccess|FileWriteAccess)
+	ioctlStorageGetDeviceNumber = uint32(0x2d1080)
 )
