@@ -34,6 +34,7 @@ func GetDisks() (ret []string, err error) {
 	if windows.Handle(handle) == windows.InvalidHandle || err != nil {
 		return nil, err
 	}
+	defer setupapi.SetupDiDestroyDeviceInfoList.Call(uintptr(handle))
 
 	deviceIndex := uintptr(0)
 	devInterfaceData := SPDeviceInterfaceData{}
@@ -115,6 +116,7 @@ func GetDiskNumber(diskDevicePath string) (uint32, error) {
 	if err != nil || dHandle == windows.InvalidHandle {
 		return 0, err
 	}
+	defer windows.CloseHandle(dHandle)
 
 	var n StorageDeviceNumber
 	var bytesReturned uint32
