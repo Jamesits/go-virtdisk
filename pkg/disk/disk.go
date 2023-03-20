@@ -68,7 +68,7 @@ func GetDisks() (ret []string, err error) {
 		b := make([]byte, s)
 		// an additional WCHAR[1] must be calculated in the initial size so that the function does not complain about
 		// windows.ERROR_INVALID_USER_BUFFER (The supplied user buffer is not valid for the requested operation.)
-		var interfaceDetailData SPDeviceInterfaceDetailData
+		var interfaceDetailData SPDeviceInterfaceDetailDataW
 		interfaceDetailData.Size = uint32(unsafe.Sizeof(interfaceDetailData))
 		_, _ = bytebuilder.Copy(b, &interfaceDetailData)
 
