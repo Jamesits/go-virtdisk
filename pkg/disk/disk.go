@@ -65,9 +65,11 @@ func GetDisks() (ret []string, err error) {
 			return nil, err
 		}
 
-		var interfaceDetailData SPDeviceInterfaceDetailData
-		interfaceDetailData.Size = uint32(unsafe.Sizeof(interfaceDetailData)) + 4 // must add a WCHAR
 		b := make([]byte, s)
+		// an additional WCHAR[1] must be calculated in the initial size so that the function does not complain about
+		// windows.ERROR_INVALID_USER_BUFFER (The supplied user buffer is not valid for the requested operation.)
+		var interfaceDetailData SPDeviceInterfaceDetailData
+		interfaceDetailData.Size = uint32(unsafe.Sizeof(interfaceDetailData))
 		_, _ = bytebuilder.Copy(b, &interfaceDetailData)
 
 		successful, _, err = setupapi.SetupDiGetDeviceInterfaceDetailW.Call(
@@ -82,7 +84,7 @@ func GetDisks() (ret []string, err error) {
 			return nil, err
 		}
 
-		_, pathBuffer := bytebuilder.CarCdr[SPDeviceInterfaceDetailData](b)
+		_, pathBuffer := bytebuilder.CarCdr[SPDeviceInterfaceDetailDataHeader](b)
 		path := windows.UTF16ToString(bytebuilder.SliceCast[uint8, uint16](pathBuffer)) // string is NUL terminated
 		ret = append(ret, path)
 

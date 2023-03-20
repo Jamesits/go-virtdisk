@@ -103,6 +103,11 @@ type SPDeviceInterfaceData struct {
 	_                  uint64
 }
 
-type SPDeviceInterfaceDetailData struct {
+type SPDeviceInterfaceDetailDataHeader struct {
 	Size uint32
+}
+
+type SPDeviceInterfaceDetailData struct {
+	SPDeviceInterfaceDetailDataHeader
+	_ uint16 // this must be calculated during sizeof()
 }
