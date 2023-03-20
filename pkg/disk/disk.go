@@ -66,10 +66,9 @@ func GetDisks() (ret []string, err error) {
 		}
 
 		var interfaceDetailData SPDeviceInterfaceDetailData
-		interfaceDetailData.Size = uint32(unsafe.Sizeof(interfaceDetailData)) + 4
+		interfaceDetailData.Size = uint32(unsafe.Sizeof(interfaceDetailData)) + 4 // must add a WCHAR
 		b := make([]byte, s)
-		bHeader, _ := bytebuilder.Marshal(&interfaceDetailData)
-		copy(b, bHeader)
+		_, _ = bytebuilder.Copy(b, &interfaceDetailData)
 
 		successful, _, err = setupapi.SetupDiGetDeviceInterfaceDetailW.Call(
 			uintptr(handle),
@@ -83,9 +82,8 @@ func GetDisks() (ret []string, err error) {
 			return nil, err
 		}
 
-		_ = bytebuilder.Unmarshal(b, &interfaceDetailData)
-		startPos := uint32(unsafe.Sizeof(interfaceDetailData))
-		path := windows.UTF16PtrToString((*uint16)(unsafe.Pointer(&b[startPos]))) // string is NUL terminated
+		_, pathBuffer := bytebuilder.CarCdr[SPDeviceInterfaceDetailData](b)
+		path := windows.UTF16ToString(bytebuilder.SliceCast[uint8, uint16](pathBuffer)) // string is NUL terminated
 		ret = append(ret, path)
 
 		deviceIndex++

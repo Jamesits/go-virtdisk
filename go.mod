@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/google/uuid v1.3.0
-	github.com/jamesits/go-bytebuilder v1.5.0
+	github.com/jamesits/go-bytebuilder v1.6.0
 	github.com/jamesits/goinvoke v1.2.0
 	github.com/jamesits/libiferr v0.0.0-20230312171451-1e9fb117bfc7
 	github.com/stretchr/testify v1.8.2
