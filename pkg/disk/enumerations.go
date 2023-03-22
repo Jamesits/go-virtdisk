@@ -1,5 +1,7 @@
 package disk
 
+const MaxPath = 255
+
 type DeviceType uint32
 
 const (
@@ -87,4 +89,54 @@ const (
 	FileDeviceNvdimm             DeviceType = 0x0000005a
 	FileDeviceHolographic        DeviceType = 0x0000005b
 	FileDeviceSdfxhci            DeviceType = 0x0000005c
+)
+
+type StoragePropertyId uint32
+
+// https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ne-winioctl-storage_property_id
+const (
+	StorageDeviceProperty                                  StoragePropertyId = 0
+	StorageAdapterProperty                                 StoragePropertyId = 1
+	StorageDeviceIdProperty                                StoragePropertyId = 2
+	StorageDeviceUniqueIdProperty                          StoragePropertyId = 3
+	StorageDeviceWriteCacheProperty                        StoragePropertyId = 4
+	StorageMiniportProperty                                StoragePropertyId = 5
+	StorageAccessAlignmentProperty                         StoragePropertyId = 6
+	StorageDeviceSeekPenaltyProperty                       StoragePropertyId = 7
+	StorageDeviceTrimProperty                              StoragePropertyId = 8
+	StorageDeviceWriteAggregationPropertyStoragePropertyId                   = 9
+	StorageDeviceDeviceTelemetryProperty                   StoragePropertyId = 10 // 0xA
+	StorageDeviceLBProvisioningProperty                    StoragePropertyId = 11 // 0xB
+	StorageDevicePowerProperty                             StoragePropertyId = 12 // 0xC
+	StorageDeviceCopyOffloadProperty                       StoragePropertyId = 13 // 0xD
+	StorageDeviceResiliencyProperty                        StoragePropertyId = 14 // 0xE
+	StorageDeviceMediumProductType                         StoragePropertyId = 15
+	StorageAdapterRpmbProperty                             StoragePropertyId = 16
+	StorageAdapterCryptoProperty                           StoragePropertyId = 17
+	StorageDeviceIoCapabilityProperty                      StoragePropertyId = 48
+	StorageAdapterProtocolSpecificProperty                                   = 49
+	StorageDeviceProtocolSpecificPropertyStoragePropertyId                   = 50
+	StorageAdapterTemperatureProperty                      StoragePropertyId = 51
+	StorageDeviceTemperatureProperty                       StoragePropertyId = 52
+	StorageAdapterPhysicalTopologyProperty                                   = 53
+	StorageDevicePhysicalTopologyPropertyStoragePropertyId                   = 54
+	StorageDeviceAttributesProperty                        StoragePropertyId = 55
+	StorageDeviceManagementStatus                          StoragePropertyId = 56
+	StorageAdapterSerialNumberProperty                     StoragePropertyId = 57
+	StorageDeviceLocationProperty                          StoragePropertyId = 58
+	StorageDeviceNumaProperty                              StoragePropertyId = 59
+	StorageDeviceZonedDeviceProperty                       StoragePropertyId = 60
+	StorageDeviceUnsafeShutdownCount                       StoragePropertyId = 61
+	StorageDeviceEnduranceProperty                         StoragePropertyId = 62
+	StorageDeviceSelfEncryptionProperty                    StoragePropertyId = 64
+	StorageFruIdProperty                                   StoragePropertyId = 65
+)
+
+type StorageQueryType uint32
+
+// https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ne-winioctl-storage_query_type
+const (
+	PropertyStandardQuery StorageQueryType = 0
+	PropertyExistsQuery   StorageQueryType = 1
+	PropertyMaskQuery     StorageQueryType = 2
 )

@@ -94,6 +94,65 @@ type StorageDeviceNumber struct {
 	PartitionNumber uint32
 }
 
+// https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ns-winioctl-storage_property_query
+type StoragePropertyQueryH struct {
+	PropertyId StoragePropertyId
+	QueryType  StorageQueryType
+}
+
+type StoragePropertyQuery struct {
+	StoragePropertyQueryH
+	AdditionalParameters byte
+}
+
+// https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ns-winioctl-storage_device_descriptor
+type StorageDeviceDescriptorH struct {
+	Version               uint32
+	Size                  uint32
+	DeviceType            byte
+	DeviceTypeModifier    byte
+	RemovableMedia        bool
+	CommandQueueing       bool
+	VendorIdOffset        uint32
+	ProductIdOffset       uint32
+	ProductRevisionOffset uint32
+	SerialNumberOffset    uint32
+	BusType               uint32
+	RawPropertiesLength   uint32
+}
+
+// https://learn.microsoft.com/zh-cn/windows/win32/api/winioctl/ns-winioctl-volume_disk_extents
+type VolumeDiskExtentsH struct {
+	NumberOfDiskExtents uint32
+}
+
+type VolumeDiskExtents struct {
+	VolumeDiskExtentsH
+	Extents DiskExtent
+}
+
+// https://learn.microsoft.com/zh-cn/windows/win32/api/winioctl/ns-winioctl-disk_extent
+type DiskExtent struct {
+	DiskNumber     uint32
+	StartingOffset uint64
+	ExtentLength   uint64
+}
+
+// https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ns-winioctl-disk_partition_info
+type DiskPartitionInfoH struct {
+	SizeOfPartitionInfo uint32
+	PartitionStyle      uint16
+}
+
+type DiskPartitionInfoMbr struct {
+	Signature uint32
+	CheckSum  uint32
+}
+
+type DiskPartitionInfoGpt struct {
+	DiskID uuid.UUID
+}
+
 // setupapi.h
 
 type SPDeviceInterfaceData struct {
@@ -103,16 +162,16 @@ type SPDeviceInterfaceData struct {
 	_                  uint64
 }
 
-type SPDeviceInterfaceDetailDataHeader struct {
+type SPDeviceInterfaceDetailDataH struct {
 	Size uint32
 }
 
 type SPDeviceInterfaceDetailDataA struct {
-	SPDeviceInterfaceDetailDataHeader
+	SPDeviceInterfaceDetailDataH
 	_ uint8
 }
 
 type SPDeviceInterfaceDetailDataW struct {
-	SPDeviceInterfaceDetailDataHeader
+	SPDeviceInterfaceDetailDataH
 	_ uint16
 }

@@ -7,8 +7,6 @@ github.com/hashicorp/errwrap v1.0.0 h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/U
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
 github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+lD48awMYo=
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
-github.com/jamesits/go-bytebuilder v1.5.0 h1:qH4XnumsZhmVOFlgYKVJE08x8OhotBIjNsny2IWxRBg=
-github.com/jamesits/go-bytebuilder v1.5.0/go.mod h1:wS9bYtt98UeI5bPj9+fd04glRnnbDjn89UFb9FkdkrY=
 github.com/jamesits/go-bytebuilder v1.6.0 h1:EgxG2shFe/PO/qpuuEu/fjgOqs3XQcE+fvq/SNvGRew=
 github.com/jamesits/go-bytebuilder v1.6.0/go.mod h1:wS9bYtt98UeI5bPj9+fd04glRnnbDjn89UFb9FkdkrY=
 github.com/jamesits/goinvoke v1.2.0 h1:r8FO/DsOy9kHmAz8C/mbsry0rFrFfueUZqSzNLr7T9A=

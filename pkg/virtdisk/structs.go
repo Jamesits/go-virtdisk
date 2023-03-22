@@ -285,9 +285,14 @@ type SetVirtualDiskInfoV7 struct {
 	ParentFilePath *uint16
 }
 
-type StorageDependencyInfo struct {
+type StorageDependencyInfoH struct {
 	Version
 	NumberEntries uint32
+}
+
+type StorageDependencyInfo struct {
+	StorageDependencyInfoH
+	_ StorageDependencyInfoType2
 }
 
 type StorageDependencyInfoType1 struct {

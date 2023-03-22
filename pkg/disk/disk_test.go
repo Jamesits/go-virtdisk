@@ -19,5 +19,9 @@ func TestGetDisk(t *testing.T) {
 		kp, err := GetDiskKernelObjectPath(disk)
 		assert.NoError(t, err)
 		fmt.Printf("\tObject path: %s\n", kp)
+
+		serial, err := GetDiskSerial(disk)
+		assert.NoError(t, err)
+		fmt.Printf("\tSerial: %s\n", serial)
 	}
 }

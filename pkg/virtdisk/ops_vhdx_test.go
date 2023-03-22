@@ -170,7 +170,7 @@ func TestCreateVhdx(t *testing.T) {
 	// note: initial request buffer size must >= struct header + at least 1 union VLA member.
 	// Sending only the header results in ERROR_INVALID_PARAMETER (0x57).
 	// Sending a buffer with sufficient size but version set to 0 results in ERROR_INVALID_LEVEL (0x7c).
-	depSize := uint32(unsafe.Sizeof(StorageDependencyInfo{}) + unsafe.Sizeof(StorageDependencyInfoType2{}))
+	depSize := uint32(unsafe.Sizeof(StorageDependencyInfoH{}) + unsafe.Sizeof(StorageDependencyInfoType2{}))
 	bufferStorageDependencyInformationIn := make([]byte, depSize)
 	versionOnly, err := bytebuilder.Marshal(&Version{Version: 2})
 	assert.NoError(t, err)
@@ -196,7 +196,7 @@ func TestCreateVhdx(t *testing.T) {
 	)
 	assert.EqualValues(t, 0, ret1)
 	// unmarshal the header
-	var depInfo StorageDependencyInfo
+	var depInfo StorageDependencyInfoH
 	depReader := bytes.NewReader(bufferStorageDependencyInformationIn)
 	readLen, err := bytebuilder.ReadPartial(depReader, &depInfo)
 	assert.EqualValues(t, unsafe.Sizeof(depInfo), readLen)

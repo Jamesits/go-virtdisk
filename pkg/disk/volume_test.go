@@ -14,10 +14,17 @@ func TestGetVolumes(t *testing.T) {
 	fmt.Printf("Volumes:\n")
 	for _, volPath := range v {
 		fmt.Printf("\t%s\n", volPath)
+
 		mps, err := GetVolumeMountPoints(volPath)
 		assert.NoError(t, err)
 		for _, mp := range mps {
 			fmt.Printf("\t\t%s\n", mp)
+		}
+
+		disks, err := GetVolumeBackingDrives(volPath)
+		assert.NoError(t, err)
+		for _, disk := range disks {
+			fmt.Printf("\t\tdep=%s\n", disk)
 		}
 	}
 }

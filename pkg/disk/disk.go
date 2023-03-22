@@ -51,7 +51,6 @@ func GetDisks() (ret []string, err error) {
 			break
 		}
 
-		// query size
 		var s uintptr
 		_, _, err := setupapi.SetupDiGetDeviceInterfaceDetailW.Call(
 			uintptr(handle),
@@ -85,7 +84,7 @@ func GetDisks() (ret []string, err error) {
 			return nil, err
 		}
 
-		_, pathBuffer := bytebuilder.CarCdr[SPDeviceInterfaceDetailDataHeader](b)
+		_, pathBuffer := bytebuilder.CarCdr[SPDeviceInterfaceDetailDataH](b)
 		path := windows.UTF16ToString(bytebuilder.SliceCast[uint8, uint16](pathBuffer)) // string is NUL terminated
 		ret = append(ret, path)
 
@@ -145,5 +144,71 @@ func GetDiskKernelObjectPath(diskDevicePath string) (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("\\\\.\\PhysicalDrive%d", n), nil
+	return DiskKernelObjectPathById(n), nil
+}
+
+func DiskKernelObjectPathById(id uint32) string {
+	return fmt.Sprintf("\\\\.\\PhysicalDrive%d", id)
+}
+
+func GetDiskSerial(diskDevicePath string) (string, error) {
+	dp, err := windows.UTF16PtrFromString(diskDevicePath)
+	if err != nil {
+		return "", err
+	}
+
+	dHandle, err := windows.CreateFile(
+		dp,
+		// Even if GENERIC_READ is not specified, metadata can still be read; GENERIC_READ requires administrator privileges.
+		// https://stackoverflow.com/questions/327718/how-to-list-physical-disks#comment89593842_11683906
+		0,
+		windows.FILE_SHARE_READ|windows.FILE_SHARE_WRITE,
+		nil,
+		windows.OPEN_EXISTING,
+		windows.FILE_ATTRIBUTE_NORMAL,
+		windows.Handle(0),
+	)
+	if err != nil || dHandle == windows.InvalidHandle {
+		return "", err
+	}
+	defer windows.CloseHandle(dHandle)
+
+	// https://forums.codeguru.com/showthread.php?545649-WinAPI-How-to-Get-Hard-Disk-Serial-Number
+	var query StoragePropertyQuery
+	query.PropertyId = StorageDeviceProperty
+	query.QueryType = PropertyStandardQuery
+	var storageDeviceDescriptor StorageDeviceDescriptorH
+	bytesReturned := uint32(unsafe.Sizeof(storageDeviceDescriptor))
+
+	for i := 0; i < 2; i++ {
+		ret := make([]byte, bytesReturned)
+		err = windows.DeviceIoControl(
+			dHandle,
+			ioctlStorageQueryProperty,
+			(*byte)(unsafe.Pointer(&query)),
+			uint32(unsafe.Sizeof(query)),
+			&ret[0],
+			bytesReturned,
+			nil,
+			nil,
+		)
+		if err != nil {
+			return "", err
+		}
+
+		_ = bytebuilder.Unmarshal(ret, &storageDeviceDescriptor)
+		if storageDeviceDescriptor.Size != bytesReturned {
+			bytesReturned = storageDeviceDescriptor.Size
+			continue
+		}
+
+		if storageDeviceDescriptor.SerialNumberOffset == 0 {
+			return "", nil
+		}
+
+		serial := windows.BytePtrToString(&ret[storageDeviceDescriptor.SerialNumberOffset])
+		return serial, nil
+	}
+
+	return "", ErrorRetryLimitExceeded
 }
