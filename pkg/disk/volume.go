@@ -7,6 +7,7 @@ import (
 	"github.com/jamesits/go-bytebuilder"
 	"github.com/jamesits/go-virtdisk/pkg/utils"
 	"golang.org/x/sys/windows"
+	"path/filepath"
 	"strings"
 	"unsafe"
 )
@@ -164,6 +165,38 @@ func GetVolumeLabel(VolumeGUIDPath string) (ret string, err error) {
 		(*uint16)(nil),
 		0,
 	)
+	if err != nil {
+		return "", err
+	}
+
+	return windows.UTF16ToString(b), nil
+}
+
+func GetMountPointByFileName(path string) (mp, rel string, err error) {
+	v, err := windows.UTF16PtrFromString(path)
+	if err != nil {
+		return "", "", err
+	}
+
+	b := make([]uint16, MaxPath+1)
+	err = windows.GetVolumePathName(v, &b[0], MaxPath+1)
+	if err != nil {
+		return "", "", err
+	}
+
+	mp = windows.UTF16ToString(b)
+	rel, err = filepath.Rel(mp, path)
+	return mp, rel, err
+}
+
+func GetVolumeGUIDPathByMountPoint(path string) (ret string, err error) {
+	v, err := windows.UTF16PtrFromString(path)
+	if err != nil {
+		return "", err
+	}
+
+	b := make([]uint16, MaxPath+1)
+	err = windows.GetVolumeNameForVolumeMountPoint(v, &b[0], MaxPath+1)
 	if err != nil {
 		return "", err
 	}
