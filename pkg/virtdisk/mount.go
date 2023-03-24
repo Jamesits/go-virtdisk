@@ -3,6 +3,7 @@ package virtdisk
 import (
 	"errors"
 	"golang.org/x/sys/windows"
+	"syscall"
 	"unsafe"
 )
 
@@ -11,7 +12,7 @@ import (
 // Open an existing virtual disk.
 // Implements:
 // - Get-VHD -Path
-func Open(path string, fileType VirtualStorageTypeDeviceType, openFlags OpenVirtualDiskFlag) (ret windows.Handle, err error) {
+func Open(path string, fileType VirtualStorageTypeDeviceType, accessMask VirtualDiskAccessMask, openFlags OpenVirtualDiskFlag) (handle windows.Handle, err error) {
 	storageType := VirtualStorageType{
 		DeviceId: fileType,
 		VendorId: VirtualStorageTypeVendorMicrosoft,
@@ -21,18 +22,19 @@ func Open(path string, fileType VirtualStorageTypeDeviceType, openFlags OpenVirt
 		return windows.InvalidHandle, err
 	}
 
-	_, _, err = virtdisk.OpenVirtualDisk.Call(
+	ret, _, _ := virtdisk.OpenVirtualDisk.Call(
 		uintptr(unsafe.Pointer(&storageType)),
 		uintptr(unsafe.Pointer(win32Path)),
+		uintptr(accessMask),
 		uintptr(openFlags),
 		intPtrZero,
-		uintptr(unsafe.Pointer(&ret)),
+		uintptr(unsafe.Pointer(&handle)),
 	)
-	if !errors.Is(err, windows.ERROR_SUCCESS) {
-		return windows.InvalidHandle, err
+	if ret != 0 {
+		return windows.InvalidHandle, syscall.Errno(ret)
 	}
 
-	return ret, nil
+	return handle, nil
 }
 
 // Mount the virtual disk.
@@ -46,6 +48,7 @@ func Mount(handle windows.Handle, noDriveLetter bool, readOnly bool) (err error)
 	if readOnly {
 		flags |= AttachVirtualDiskFlagReadOnly
 	}
+	flags |= AttachVirtualDiskFlagPermanentLifetime
 
 	_, _, err = virtdisk.AttachVirtualDisk.Call(
 		uintptr(handle),

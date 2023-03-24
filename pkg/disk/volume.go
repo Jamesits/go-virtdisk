@@ -203,3 +203,29 @@ func GetVolumeGUIDPathByMountPoint(path string) (ret string, err error) {
 
 	return windows.UTF16ToString(b), nil
 }
+
+func Mount(volumeGUIDPath string, mountPoint string) error {
+	// https://learn.microsoft.com/en-us/windows/win32/fileio/editing-drive-letter-assignments
+	win32VolumePath, err := windows.UTF16PtrFromString(volumeGUIDPath)
+	if err != nil {
+		return err
+	}
+
+	win32MountPoint, err := windows.UTF16PtrFromString(utils.FixMountPointPath(mountPoint))
+	if err != nil {
+		return err
+	}
+
+	err = windows.SetVolumeMountPoint(win32MountPoint, win32VolumePath)
+	return err
+}
+
+func Dismount(mountPoint string) error {
+	win32MountPoint, err := windows.UTF16PtrFromString(utils.FixMountPointPath(mountPoint))
+	if err != nil {
+		return err
+	}
+
+	err = windows.DeleteVolumeMountPoint(win32MountPoint)
+	return err
+}

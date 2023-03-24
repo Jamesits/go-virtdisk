@@ -1,8 +1,9 @@
 package virtdisk
 
+// converts between virtual disks, disks, handles and file paths.
+
 import (
 	"bytes"
-	"errors"
 	"github.com/jamesits/go-bytebuilder"
 	"github.com/jamesits/go-virtdisk/pkg/utils"
 	"golang.org/x/sys/windows"
@@ -73,32 +74,33 @@ func GetVirtualDiskBackingFiles(diskDevicePath string) ([]string, error) {
 
 func getPhysicalPathUTF16(handle windows.Handle) (path []uint16, err error) {
 	virtualDiskPhysicalPathSize := uint32(0)
-	_, _, err = virtdisk.GetVirtualDiskPhysicalPath.Call(
+	errcode, _, _ := virtdisk.GetVirtualDiskPhysicalPath.Call(
 		uintptr(handle),
 		uintptr(unsafe.Pointer(&virtualDiskPhysicalPathSize)),
 		intPtrZero,
 	)
-	if !errors.Is(err, windows.ERROR_SUCCESS) {
-		return nil, err
+	if errcode != uintptr(windows.ERROR_INSUFFICIENT_BUFFER) {
+		return nil, windows.Errno(errcode)
 	}
 
 	virtualDiskPhysicalPathUtf16 := make([]uint16, virtualDiskPhysicalPathSize)
-	_, _, err = virtdisk.GetVirtualDiskPhysicalPath.Call(
+	errcode, _, _ = virtdisk.GetVirtualDiskPhysicalPath.Call(
 		uintptr(handle),
 		uintptr(unsafe.Pointer(&virtualDiskPhysicalPathSize)),
 		uintptr(unsafe.Pointer(&virtualDiskPhysicalPathUtf16[0])),
 	)
-	if !errors.Is(err, windows.ERROR_SUCCESS) {
-		return nil, err
+	if errcode != 0 {
+		return nil, windows.Errno(errcode)
 	}
 
 	return virtualDiskPhysicalPathUtf16, nil
 }
 
 // GetPhysicalPath returns normalized disk path of a opened virtual disk.
+// Required permission: virtdisk.VirtualDiskAccessGetInfo
 func GetPhysicalPath(handle windows.Handle) (path string, err error) {
 	p, err := getPhysicalPathUTF16(handle)
-	if !errors.Is(err, windows.ERROR_SUCCESS) {
+	if err != nil {
 		return "", err
 	}
 

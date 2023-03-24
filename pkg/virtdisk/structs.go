@@ -96,6 +96,11 @@ type ExpandVirtualDiskParametersV1 struct {
 	NewSize uint64
 }
 
+type GetVirtualDiskInfo struct {
+	Version
+	_ [16]byte
+}
+
 type GetVirtualDiskInfoV1 struct {
 	Version
 	VirtualSize  uint64
@@ -109,10 +114,14 @@ type GetVirtualDiskInfoV2 struct {
 	Identifier uuid.UUID
 }
 
-type GetVirtualDiskInfoV3 struct {
+type GetVirtualDiskInfoV3H struct {
 	Version
-	ParentResolved       bool
-	ParentLocationBuffer *uint16
+	ParentResolved bool
+}
+
+type GetVirtualDiskInfoV3 struct {
+	GetVirtualDiskInfoV3H
+	ParentLocationBuffer uint16
 }
 
 type GetVirtualDiskInfoV4 struct {
