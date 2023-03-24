@@ -1,5 +1,7 @@
 package disk
 
+import "golang.org/x/sys/windows"
+
 const MaxPath = 255
 
 type DeviceType uint32
@@ -140,3 +142,10 @@ const (
 	PropertyExistsQuery   StorageQueryType = 1
 	PropertyMaskQuery     StorageQueryType = 2
 )
+
+var GuidDevInterfaceDisk = &windows.GUID{
+	Data1: 0x53F56307,
+	Data2: 0xB6BF,
+	Data3: 0x11D0,
+	Data4: [8]byte{0x94, 0xF2, 0x00, 0xA0, 0xC9, 0x1E, 0xFB, 0x8B},
+}

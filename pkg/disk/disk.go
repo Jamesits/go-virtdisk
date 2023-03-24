@@ -4,25 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jamesits/go-bytebuilder"
+	"github.com/jamesits/go-virtdisk/pkg/utils"
 	"golang.org/x/sys/windows"
 	"unsafe"
 )
-
-var GuidDevInterfaceDisk = &windows.GUID{
-	Data1: 0x53F56307,
-	Data2: 0xB6BF,
-	Data3: 0x11D0,
-	Data4: [8]byte{0x94, 0xF2, 0x00, 0xA0, 0xC9, 0x1E, 0xFB, 0x8B},
-}
-
-var setupapi Setupapi
-
-func init() {
-	err := setupapi.Unmarshal("setupapi.dll")
-	if err != nil {
-		panic(err)
-	}
-}
 
 // GetDisks returns the device path of the disk.
 // The returned string is a object under `\GLOBAL??`. Examples:
@@ -210,5 +195,5 @@ func GetDiskSerial(diskDevicePath string) (string, error) {
 		return serial, nil
 	}
 
-	return "", ErrorRetryLimitExceeded
+	return "", utils.ErrorRetryLimitExceeded
 }

@@ -121,7 +121,7 @@ func GetVolumeBackingDrives(VolumeGUIDPath string) (drives []string, err error) 
 		return
 	}
 
-	return nil, ErrorRetryLimitExceeded
+	return nil, utils.ErrorRetryLimitExceeded
 }
 
 func GetVolumeSerial(VolumeGUIDPath string) (ret string, err error) {

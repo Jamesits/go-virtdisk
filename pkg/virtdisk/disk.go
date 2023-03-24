@@ -2,12 +2,14 @@ package virtdisk
 
 import (
 	"bytes"
+	"errors"
 	"github.com/jamesits/go-bytebuilder"
-	"github.com/jamesits/go-virtdisk/pkg/disk"
+	"github.com/jamesits/go-virtdisk/pkg/utils"
 	"golang.org/x/sys/windows"
 	"unsafe"
 )
 
+// GetVirtualDiskBackingFiles returns filesystem paths to all the virtual disk backing files, sorted from the child to the parent.
 func GetVirtualDiskBackingFiles(diskDevicePath string) ([]string, error) {
 	var err error
 	win32SourcePath, err := windows.UTF16PtrFromString(diskDevicePath)
@@ -16,6 +18,7 @@ func GetVirtualDiskBackingFiles(diskDevicePath string) ([]string, error) {
 	}
 
 	// get a handle to the disk
+	// we don't need any access permission here
 	diskHandle, err := windows.CreateFile(win32SourcePath, 0, windows.FILE_SHARE_READ, nil, windows.OPEN_EXISTING, 0, windows.Handle(0))
 	if err != nil {
 		return nil, err
@@ -65,5 +68,40 @@ func GetVirtualDiskBackingFiles(diskDevicePath string) ([]string, error) {
 		return ret, nil
 	}
 
-	return nil, disk.ErrorRetryLimitExceeded
+	return nil, utils.ErrorRetryLimitExceeded
+}
+
+func getPhysicalPathUTF16(handle windows.Handle) (path []uint16, err error) {
+	virtualDiskPhysicalPathSize := uint32(0)
+	_, _, err = virtdisk.GetVirtualDiskPhysicalPath.Call(
+		uintptr(handle),
+		uintptr(unsafe.Pointer(&virtualDiskPhysicalPathSize)),
+		intPtrZero,
+	)
+	if !errors.Is(err, windows.ERROR_SUCCESS) {
+		return nil, err
+	}
+
+	virtualDiskPhysicalPathUtf16 := make([]uint16, virtualDiskPhysicalPathSize)
+	_, _, err = virtdisk.GetVirtualDiskPhysicalPath.Call(
+		uintptr(handle),
+		uintptr(unsafe.Pointer(&virtualDiskPhysicalPathSize)),
+		uintptr(unsafe.Pointer(&virtualDiskPhysicalPathUtf16[0])),
+	)
+	if !errors.Is(err, windows.ERROR_SUCCESS) {
+		return nil, err
+	}
+
+	return virtualDiskPhysicalPathUtf16, nil
+}
+
+// GetPhysicalPath returns normalized disk path of a opened virtual disk.
+func GetPhysicalPath(handle windows.Handle) (path string, err error) {
+	p, err := getPhysicalPathUTF16(handle)
+	if !errors.Is(err, windows.ERROR_SUCCESS) {
+		return "", err
+	}
+
+	virtualDiskPhysicalPath := windows.UTF16ToString(p)
+	return virtualDiskPhysicalPath, nil
 }
