@@ -40,10 +40,12 @@ func TestGetVolumes(t *testing.T) {
 	}
 }
 
-func TestFilePathConversion(t *testing.T) {
+func TestFilePathConversionWithNormalizedFile(t *testing.T) {
 	path := types.Path("\\\\.\\C:\\Windows\\System32\\notepad.exe")
 	mp, rel, err := mountpoints.FromPath(path)
 	assert.NoError(t, err)
+	assert.EqualValues(t, "\\\\.\\C:\\", mp)
+	assert.EqualValues(t, "Windows\\System32\\notepad.exe", rel)
 	fmt.Printf("mp=%s\n", mp)
 	fmt.Printf("rel=%s\n", rel)
 
@@ -53,4 +55,22 @@ func TestFilePathConversion(t *testing.T) {
 
 	vol, err = FromMountPoint(types.MountPoint(path))
 	assert.ErrorIs(t, err, windows.ERROR_INVALID_NAME)
+}
+
+func TestFilePathConversionWithNormalizedMountPoint(t *testing.T) {
+	mp, rel, err := mountpoints.FromPath(types.Path("\\\\.\\C:\\"))
+	assert.NoError(t, err)
+	assert.EqualValues(t, "\\\\.\\C:\\", mp)
+	assert.EqualValues(t, ".", rel)
+	fmt.Printf("mp=%s\n", mp)
+	fmt.Printf("rel=%s\n", rel)
+}
+
+func TestFilePathConversionWithSimplifiedMountPoint(t *testing.T) {
+	mp, rel, err := mountpoints.FromPath(types.Path("C:\\"))
+	assert.NoError(t, err)
+	assert.EqualValues(t, "C:\\", mp)
+	assert.EqualValues(t, ".", rel)
+	fmt.Printf("mp=%s\n", mp)
+	fmt.Printf("rel=%s\n", rel)
 }

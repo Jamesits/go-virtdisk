@@ -12,7 +12,7 @@ func Mount(volume types.Volume, mountPoint types.MountPoint) error {
 		return err
 	}
 
-	win32MountPoint, err := mountPoint.AsNormalizedDirectory()
+	win32MountPoint, err := mountPoint.AsDirectory()
 	if err != nil {
 		return err
 	}
@@ -22,7 +22,7 @@ func Mount(volume types.Volume, mountPoint types.MountPoint) error {
 }
 
 func Dismount(mountPoint types.MountPoint) error {
-	win32MountPoint, err := mountPoint.AsNormalizedDirectory()
+	win32MountPoint, err := mountPoint.AsDirectory()
 	if err != nil {
 		return err
 	}

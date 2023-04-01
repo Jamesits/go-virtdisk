@@ -14,3 +14,7 @@ func (v Volume) AsFileName() (*uint16, error) {
 	// https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-volume
 	return windows.UTF16PtrFromString(strings.TrimRight(string(v), "\\"))
 }
+
+func (v Volume) AsObjectPath() (*uint16, error) {
+	return Path(v).asUTF16Ptr()
+}

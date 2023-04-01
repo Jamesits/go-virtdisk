@@ -1,6 +1,8 @@
 package types
 
-import "strings"
+import (
+	"strings"
+)
 
 // MountPoint is a reparse point.
 // Examples:
@@ -12,13 +14,9 @@ func (mp MountPoint) AsFileName() (*uint16, error) {
 	return Path(mp).asUTF16Ptr()
 }
 
-func (mp MountPoint) AsNormalizedDirectory() (*uint16, error) {
-	//if strings.HasPrefix(mountPoint, "\\\\.\\") {
-	//	mountPoint = mountPoint[4:]
-	//}
-
-	if !strings.HasSuffix(string(mp), "\\") {
-		mp = mp + "\\"
+func (mp MountPoint) AsDirectory() (*uint16, error) {
+	if !strings.HasSuffix(string(mp), PathSeparator) {
+		mp = mp + MountPoint(PathSeparator)
 	}
 
 	return Path(mp).asUTF16Ptr()

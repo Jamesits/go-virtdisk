@@ -9,3 +9,7 @@ type Device Path
 func (d Device) AsFileName() (*uint16, error) {
 	return Path(d).asUTF16Ptr()
 }
+
+func (d Device) AsObjectPath() (*uint16, error) {
+	return Path(d).asUTF16Ptr()
+}
