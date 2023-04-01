@@ -1,4 +1,4 @@
-package virtdisks
+package ffi
 
 import "github.com/google/uuid"
 

@@ -2,6 +2,7 @@ package volumes
 
 import (
 	"fmt"
+	"github.com/jamesits/go-virtdisk/pkg/drives"
 	"github.com/jamesits/go-virtdisk/pkg/mountpoints"
 	"github.com/jamesits/go-virtdisk/pkg/types"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +25,7 @@ func TestGetVolumes(t *testing.T) {
 			fmt.Printf("\t\t%s\n", mp)
 		}
 
-		disks, err := GetBackingDrives(volPath)
+		disks, err := drives.FromVolume(volPath)
 		assert.NoError(t, err)
 		for _, disk := range disks {
 			fmt.Printf("\t\tdep=%s\n", disk)

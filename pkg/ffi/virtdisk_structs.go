@@ -12,7 +12,6 @@ package ffi
 
 import (
 	"github.com/google/uuid"
-	"github.com/jamesits/go-virtdisk/pkg/virtdisks"
 )
 
 // common
@@ -64,7 +63,7 @@ type CreateVirtualDiskParametersV2 struct {
 	PhysicalSectorSizeInBytes uint32
 	ParentPath                *uint16
 	SourcePath                *uint16
-	OpenFlags                 virtdisks.OpenVirtualDiskFlag
+	OpenFlags                 OpenVirtualDiskFlag
 	ParentVirtualStorageType  VirtualStorageType
 	SourceVirtualStorageType  VirtualStorageType
 	ResiliencyGuid            uuid.UUID
@@ -79,7 +78,7 @@ type CreateVirtualDiskParametersV3 struct {
 	PhysicalSectorSizeInBytes uint32
 	ParentPath                *uint16
 	SourcePath                *uint16
-	OpenFlags                 virtdisks.OpenVirtualDiskFlag
+	OpenFlags                 OpenVirtualDiskFlag
 	ParentVirtualStorageType  VirtualStorageType
 	SourceVirtualStorageType  VirtualStorageType
 	ResiliencyGuid            uuid.UUID
@@ -142,7 +141,7 @@ type GetVirtualDiskInfoV6 struct {
 
 type GetVirtualDiskInfoV7 struct {
 	Version
-	ProviderSubtype virtdisks.VirtualDiskInfoProviderSubtype
+	ProviderSubtype VirtualDiskInfoProviderSubtype
 }
 
 type GetVirtualDiskInfoV8 struct {
@@ -306,7 +305,7 @@ type StorageDependencyInfo struct {
 }
 
 type StorageDependencyInfoType1 struct {
-	DependencyTypeFlags   virtdisks.DependentDiskFlag
+	DependencyTypeFlags   DependentDiskFlag
 	ProviderSpecificFlags uint32
 	VirtualStorageType    VirtualStorageType
 }
@@ -332,6 +331,6 @@ type VirtualDiskProgress struct {
 }
 
 type VirtualStorageType struct {
-	DeviceId virtdisks.VirtualStorageTypeDeviceType
+	DeviceId VirtualStorageTypeDeviceType
 	VendorId uuid.UUID
 }

@@ -17,8 +17,8 @@ func TestCreateVhd(t *testing.T) {
 
 	// CreateVirtualDisk with parameters V1
 	vsType := ffi.VirtualStorageType{
-		DeviceId: VirtualStorageTypeDeviceVhd,
-		VendorId: VirtualStorageTypeVendorMicrosoft,
+		DeviceId: ffi.VirtualStorageTypeDeviceVhd,
+		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
 	}
 	path, _ := windows.UTF16PtrFromString(filepath.Join(temporaryDirectory, "test.vhd"))
 	param := ffi.CreateVirtualDiskParametersV1{
@@ -27,15 +27,15 @@ func TestCreateVhd(t *testing.T) {
 	}
 	handle := types.IntPtrZero
 	ret1, _, err = ffi.Virtdisk.CreateVirtualDisk.Call(
-		uintptr(unsafe.Pointer(&vsType)),   // VirtualStorageType
-		uintptr(unsafe.Pointer(path)),      // Path
-		uintptr(VirtualDiskAccessCreate),   // VirtualDiskAccessMask
-		types.IntPtrZero,                   // SecurityDescriptor
-		uintptr(CreateVirtualDiskFlagNone), // Flags
-		types.IntPtrZero,                   // ProviderSpecificFlags
-		uintptr(unsafe.Pointer(&param)),    // Parameters
-		types.IntPtrZero,                   // Overlapped
-		uintptr(unsafe.Pointer(&handle)),   // handle
+		uintptr(unsafe.Pointer(&vsType)),       // VirtualStorageType
+		uintptr(unsafe.Pointer(path)),          // Path
+		uintptr(ffi.VirtualDiskAccessCreate),   // VirtualDiskAccessMask
+		types.IntPtrZero,                       // SecurityDescriptor
+		uintptr(ffi.CreateVirtualDiskFlagNone), // Flags
+		types.IntPtrZero,                       // ProviderSpecificFlags
+		uintptr(unsafe.Pointer(&param)),        // Parameters
+		types.IntPtrZero,                       // Overlapped
+		uintptr(unsafe.Pointer(&handle)),       // handle
 	)
 	fmt.Printf("handle = %v\n", handle)
 	assert.ErrorIs(t, err, windows.ERROR_SUCCESS)
