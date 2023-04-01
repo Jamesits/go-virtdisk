@@ -9,10 +9,14 @@ import (
 
 var PathSeparator = fmt.Sprintf("%c", os.PathSeparator)
 
-// Path represents a generic Windows path in the files system, without assumption of its kind or existence.
+// Path represents a generic Windows path in the paths system, without assumption of its kind or existence.
 type Path string
 
-func (p Path) AsUTF16Ptr() (*uint16, error) {
+func (p Path) AsFileName() (*uint16, error) {
+	return p.asUTF16Ptr()
+}
+
+func (p Path) asUTF16Ptr() (*uint16, error) {
 	return windows.UTF16PtrFromString(string(p))
 }
 

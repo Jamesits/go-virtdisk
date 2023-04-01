@@ -78,7 +78,7 @@ func ListDrives() (ret []types.Device, err error) {
 
 // GetStorageDeviceNumber returns the PhysicalDrive number of the hard drives devices.
 func GetStorageDeviceNumber(device types.Device) (uint32, error) {
-	dp, err := types.Path(device).AsUTF16Ptr()
+	dp, err := device.AsFileName()
 	if err != nil {
 		return 0, err
 	}

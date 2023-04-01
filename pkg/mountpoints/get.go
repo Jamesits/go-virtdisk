@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 )
 
-// FromPath returns the mount point, and its relative path from the mount point, from a files.
+// FromPath returns the mount point, and its relative path from the mount point, from a paths.
 func FromPath(path types.Path) (mp types.MountPoint, rel types.Path, err error) {
-	v, err := path.AsUTF16Ptr()
+	v, err := path.AsFileName()
 	if err != nil {
 		return "", "", err
 	}
@@ -30,7 +30,7 @@ func FromPath(path types.Path) (mp types.MountPoint, rel types.Path, err error) 
 
 // FromVolume returns a list of mount points (drives name: `C:\` or directory) for a volumes.
 func FromVolume(volume types.Volume) (ret []types.MountPoint, err error) {
-	v, err := types.Path(volume).AsUTF16Ptr()
+	v, err := volume.AsFileName() // FIXME: maybe we should not remove the \\ here
 	if err != nil {
 		return nil, err
 	}

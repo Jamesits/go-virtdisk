@@ -7,7 +7,6 @@ import (
 	"github.com/jamesits/go-bytebuilder"
 	"github.com/jamesits/go-virtdisk/pkg/ffi"
 	"github.com/jamesits/go-virtdisk/pkg/types"
-	"github.com/jamesits/go-virtdisk/pkg/utils"
 	"golang.org/x/sys/windows"
 	"unsafe"
 )
@@ -34,7 +33,7 @@ func List() (ret []types.Volume, err error) {
 }
 
 func FromMountPoint(path types.MountPoint) (ret types.Volume, err error) {
-	v, err := types.Path(path).AsUTF16Ptr()
+	v, err := types.Path(path).asUTF16Ptr()
 	if err != nil {
 		return "", err
 	}
@@ -50,7 +49,7 @@ func FromMountPoint(path types.MountPoint) (ret types.Volume, err error) {
 
 func GetBackingDrives(volume types.Volume) (drives []types.Drive, err error) {
 	// https://stackoverflow.com/questions/29212597/how-to-enumerate-disk-volume-names
-	vp, err := volume.AsFile()
+	vp, err := volume.AsFileName()
 	if err != nil {
 		return nil, err
 	}
@@ -109,11 +108,11 @@ func GetBackingDrives(volume types.Volume) (drives []types.Drive, err error) {
 		return
 	}
 
-	return nil, utils.ErrorRetryLimitExceeded
+	return nil, types.ErrorRetryLimitExceeded
 }
 
 func GetSerial(volume types.Volume) (ret string, err error) {
-	v, err := types.Path(volume).AsUTF16Ptr()
+	v, err := types.Path(volume).asUTF16Ptr()
 	if err != nil {
 		return "", err
 	}
@@ -137,7 +136,7 @@ func GetSerial(volume types.Volume) (ret string, err error) {
 }
 
 func GetLabel(volume types.Volume) (ret string, err error) {
-	v, err := types.Path(volume).AsUTF16Ptr()
+	v, err := types.Path(volume).asUTF16Ptr()
 	if err != nil {
 		return "", err
 	}

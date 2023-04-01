@@ -5,7 +5,6 @@ import (
 	"github.com/jamesits/go-virtdisk/pkg/devices"
 	"github.com/jamesits/go-virtdisk/pkg/ffi"
 	"github.com/jamesits/go-virtdisk/pkg/types"
-	"github.com/jamesits/go-virtdisk/pkg/utils"
 	"golang.org/x/sys/windows"
 	"unsafe"
 )
@@ -40,7 +39,7 @@ func FromDevice(device types.Device) (types.Drive, error) {
 }
 
 func GetSerial(disk types.Drive) (string, error) {
-	dp, err := types.Path(disk).AsUTF16Ptr()
+	dp, err := disk.AsFileName()
 	if err != nil {
 		return "", err
 	}
@@ -98,5 +97,5 @@ func GetSerial(disk types.Drive) (string, error) {
 		return serial, nil
 	}
 
-	return "", utils.ErrorRetryLimitExceeded
+	return "", types.ErrorRetryLimitExceeded
 }

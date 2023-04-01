@@ -1,21 +1,20 @@
 package virtdisks
 
-// converts between virtual disks, disks, handles and files paths.
+// converts between virtual disks, disks, handles and paths paths.
 
 import (
 	"bytes"
 	"github.com/jamesits/go-bytebuilder"
 	"github.com/jamesits/go-virtdisk/pkg/ffi"
 	"github.com/jamesits/go-virtdisk/pkg/types"
-	"github.com/jamesits/go-virtdisk/pkg/utils"
 	"golang.org/x/sys/windows"
 	"unsafe"
 )
 
-// GetVirtualDiskBackingFiles returns filesystem paths to all the virtual drives backing files, sorted from the child to the parent.
-func GetVirtualDiskBackingFiles(diskDevicePath types.Drive) ([]string, error) {
+// GetVirtualDiskBackingFiles returns filesystem paths to all the virtual drives backing paths, sorted from the child to the parent.
+func GetVirtualDiskBackingFiles(drive types.Drive) ([]types.Path, error) {
 	var err error
-	win32SourcePath, err := types.Path(diskDevicePath).AsUTF16Ptr()
+	win32SourcePath, err := drive.AsFileName()
 	if err != nil {
 		return nil, err
 	}
@@ -59,22 +58,22 @@ func GetVirtualDiskBackingFiles(diskDevicePath types.Drive) ([]string, error) {
 		// parse data
 		var sdh ffi.StorageDependencyInfoH
 		var sde ffi.StorageDependencyInfoType2
-		var ret []string
+		var ret []types.Path
 		reader := bytes.NewReader(b)
 		_, _ = bytebuilder.ReadPartial(reader, &sdh)
 		for j := uint32(0); j < sdh.NumberEntries; j++ {
 			_, _ = bytebuilder.ReadPartial(reader, &sde)
 			depPath := windows.UTF16PtrToString(sde.HostVolumeName) + windows.UTF16PtrToString(sde.DependentVolumeRelativePath)
-			ret = append(ret, depPath)
+			ret = append(ret, types.Path(depPath))
 		}
 
 		return ret, nil
 	}
 
-	return nil, utils.ErrorRetryLimitExceeded
+	return nil, types.ErrorRetryLimitExceeded
 }
 
-func getPhysicalPathUTF16(handle windows.Handle) (path []uint16, err error) {
+func getPhysicalPathUTF16(handle types.VDiskHandle) (path []uint16, err error) {
 	virtualDiskPhysicalPathSize := uint32(0)
 	errcode, _, _ := ffi.Virtdisk.GetVirtualDiskPhysicalPath.Call(
 		uintptr(handle),
@@ -100,12 +99,12 @@ func getPhysicalPathUTF16(handle windows.Handle) (path []uint16, err error) {
 
 // GetPhysicalPath returns normalized drives path of a opened virtual drives.
 // Required permission: virtdisks.VirtualDiskAccessGetInfo
-func GetPhysicalPath(handle windows.Handle) (path string, err error) {
+func GetPhysicalPath(handle types.VDiskHandle) (path types.Path, err error) {
 	p, err := getPhysicalPathUTF16(handle)
 	if err != nil {
 		return "", err
 	}
 
-	virtualDiskPhysicalPath := windows.UTF16ToString(p)
+	virtualDiskPhysicalPath := types.PathFromUTF16(p)
 	return virtualDiskPhysicalPath, nil
 }

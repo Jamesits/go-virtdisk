@@ -1,4 +1,4 @@
-package files
+package paths
 
 import (
 	"errors"
@@ -26,7 +26,7 @@ func Mkdir(path types.Path) error {
 	cPath := vol
 	for _, seg := range segments {
 		cPath = types.MountPoint(strings.Join([]string{string(cPath), string(seg)}, types.PathSeparator))
-		win32cPath, err := types.Path(cPath).AsUTF16Ptr()
+		win32cPath, err := cPath.AsFileName()
 		if err != nil {
 			return err
 		}
@@ -58,7 +58,7 @@ func Rmdir(path types.Path) error {
 		return mountpoints.Dismount(vol)
 	}
 
-	win32Path, err := path.AsUTF16Ptr()
+	win32Path, err := path.AsFileName()
 	if err != nil {
 		return err
 	}
