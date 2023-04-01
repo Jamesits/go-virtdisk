@@ -13,10 +13,10 @@ import (
 // Implements:
 // - New-VHD -Dynamic
 // - New-VHD -Fixed
-func New(path types.Path, diskType ffi.VirtualStorageTypeDeviceType, sizeBytes uint64, dynamic bool, blockSizeBytes uint32, logicalSectorSizeBytes uint32, physicalSectorSizeBytes uint32) (handle types.VDiskHandle, err error) {
+func New(path types.Path, diskType VirtualStorageTypeDeviceType, sizeBytes uint64, dynamic bool, blockSizeBytes uint32, logicalSectorSizeBytes uint32, physicalSectorSizeBytes uint32) (handle types.VDiskHandle, err error) {
 	storageType := ffi.VirtualStorageType{
 		DeviceId: diskType,
-		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
+		VendorId: VirtualStorageTypeVendorMicrosoft,
 	}
 	win32Path, err := path.AsFileName()
 	if err != nil {
@@ -31,22 +31,22 @@ func New(path types.Path, diskType ffi.VirtualStorageTypeDeviceType, sizeBytes u
 		PhysicalSectorSizeInBytes: physicalSectorSizeBytes,
 		ParentPath:                nil,
 		SourcePath:                nil,
-		OpenFlags:                 ffi.OpenVirtualDiskFlagNone,
+		OpenFlags:                 OpenVirtualDiskFlagNone,
 		ParentVirtualStorageType:  ffi.VirtualStorageType{},
 		SourceVirtualStorageType:  ffi.VirtualStorageType{},
 		ResiliencyGuid:            uuid.Nil,
 	}
-	createVirtualDiskFlag := ffi.CreateVirtualDiskFlagNone
+	createVirtualDiskFlag := CreateVirtualDiskFlagNone
 	if dynamic {
-		createVirtualDiskFlag |= ffi.CreateVirtualDiskFlagFullPhysicalAllocation
+		createVirtualDiskFlag |= CreateVirtualDiskFlagFullPhysicalAllocation
 	} else {
-		createVirtualDiskFlag |= ffi.CreateVirtualDiskFlagSparseFile
+		createVirtualDiskFlag |= CreateVirtualDiskFlagSparseFile
 	}
 
 	_, _, err = ffi.Virtdisk.CreateVirtualDisk.Call(
 		uintptr(unsafe.Pointer(&storageType)), // VirtualStorageType
 		uintptr(unsafe.Pointer(win32Path)),    // Path
-		uintptr(ffi.VirtualDiskAccessNone),    // VirtualDiskAccessMask (must be none if using struct v2)
+		uintptr(VirtualDiskAccessNone),        // VirtualDiskAccessMask (must be none if using struct v2)
 		types.IntPtrZero,                      // SecurityDescriptor
 		uintptr(createVirtualDiskFlag),        // Flags
 		types.IntPtrZero,                      // ProviderSpecificFlags
@@ -64,10 +64,10 @@ func New(path types.Path, diskType ffi.VirtualStorageTypeDeviceType, sizeBytes u
 // Mirror a drives into a new virtual drives.
 // Implements:
 // - New-VHD -SourceDisk
-func Mirror(path types.Path, sourceDiskPath types.Path, diskType ffi.VirtualStorageTypeDeviceType, dynamic bool, blockSizeBytes uint32) (handle types.VDiskHandle, err error) {
+func Mirror(path types.Path, sourceDiskPath types.Path, diskType VirtualStorageTypeDeviceType, dynamic bool, blockSizeBytes uint32) (handle types.VDiskHandle, err error) {
 	storageType := ffi.VirtualStorageType{
 		DeviceId: diskType,
-		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
+		VendorId: VirtualStorageTypeVendorMicrosoft,
 	}
 	win32Path, err := path.AsFileName()
 	if err != nil {
@@ -86,22 +86,22 @@ func Mirror(path types.Path, sourceDiskPath types.Path, diskType ffi.VirtualStor
 		PhysicalSectorSizeInBytes: 0,
 		ParentPath:                nil,
 		SourcePath:                win32SourcePath,
-		OpenFlags:                 ffi.OpenVirtualDiskFlagNone,
+		OpenFlags:                 OpenVirtualDiskFlagNone,
 		ParentVirtualStorageType:  ffi.VirtualStorageType{},
 		SourceVirtualStorageType:  ffi.VirtualStorageType{},
 		ResiliencyGuid:            uuid.Nil,
 	}
-	createVirtualDiskFlag := ffi.CreateVirtualDiskFlagNone
+	createVirtualDiskFlag := CreateVirtualDiskFlagNone
 	if dynamic {
-		createVirtualDiskFlag |= ffi.CreateVirtualDiskFlagFullPhysicalAllocation
+		createVirtualDiskFlag |= CreateVirtualDiskFlagFullPhysicalAllocation
 	} else {
-		createVirtualDiskFlag |= ffi.CreateVirtualDiskFlagSparseFile
+		createVirtualDiskFlag |= CreateVirtualDiskFlagSparseFile
 	}
 
 	_, _, err = ffi.Virtdisk.CreateVirtualDisk.Call(
 		uintptr(unsafe.Pointer(&storageType)), // VirtualStorageType
 		uintptr(unsafe.Pointer(win32Path)),    // Path
-		uintptr(ffi.VirtualDiskAccessNone),    // VirtualDiskAccessMask (must be none if using struct v2)
+		uintptr(VirtualDiskAccessNone),        // VirtualDiskAccessMask (must be none if using struct v2)
 		types.IntPtrZero,                      // SecurityDescriptor
 		uintptr(createVirtualDiskFlag),        // Flags
 		types.IntPtrZero,                      // ProviderSpecificFlags

@@ -10,10 +10,10 @@ import (
 // Open an existing virtual drives.
 // Implements:
 // - Get-VHD -Path
-func Open(path types.Path, fileType ffi.VirtualStorageTypeDeviceType, accessMask ffi.VirtualDiskAccessMask, openFlags ffi.OpenVirtualDiskFlag) (handle types.VDiskHandle, err error) {
+func Open(path types.Path, fileType VirtualStorageTypeDeviceType, accessMask VirtualDiskAccessMask, openFlags OpenVirtualDiskFlag) (handle types.VDiskHandle, err error) {
 	storageType := ffi.VirtualStorageType{
 		DeviceId: fileType,
-		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
+		VendorId: VirtualStorageTypeVendorMicrosoft,
 	}
 	win32Path, err := path.AsFileName()
 	if err != nil {

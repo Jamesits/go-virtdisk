@@ -15,10 +15,10 @@ import (
 // Fork a differencing virtual drives from a parent.
 // Implements:
 // - New-VHD -Differencing
-func Fork(path types.Path, parentPath types.Path, diskType ffi.VirtualStorageTypeDeviceType, sizeBytes uint64, blockSizeBytes uint32, physicalSectorSizeBytes uint32) (handle types.VDiskHandle, err error) {
+func Fork(path types.Path, parentPath types.Path, diskType VirtualStorageTypeDeviceType, sizeBytes uint64, blockSizeBytes uint32, physicalSectorSizeBytes uint32) (handle types.VDiskHandle, err error) {
 	storageType := ffi.VirtualStorageType{
 		DeviceId: diskType,
-		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
+		VendorId: VirtualStorageTypeVendorMicrosoft,
 	}
 	win32Path, err := path.AsFileName()
 	if err != nil {
@@ -37,22 +37,22 @@ func Fork(path types.Path, parentPath types.Path, diskType ffi.VirtualStorageTyp
 		PhysicalSectorSizeInBytes: physicalSectorSizeBytes,
 		ParentPath:                win32ParentPath,
 		SourcePath:                nil,
-		OpenFlags:                 ffi.OpenVirtualDiskFlagNone,
+		OpenFlags:                 OpenVirtualDiskFlagNone,
 		ParentVirtualStorageType:  ffi.VirtualStorageType{}, // TODO: check if this works
 		SourceVirtualStorageType:  ffi.VirtualStorageType{},
 		ResiliencyGuid:            uuid.Nil,
 	}
 
 	_, _, err = ffi.Virtdisk.CreateVirtualDisk.Call(
-		uintptr(unsafe.Pointer(&storageType)),  // VirtualStorageType
-		uintptr(unsafe.Pointer(win32Path)),     // Path
-		uintptr(ffi.VirtualDiskAccessNone),     // VirtualDiskAccessMask (must be none if using struct v2)
-		types.IntPtrZero,                       // SecurityDescriptor
-		uintptr(ffi.CreateVirtualDiskFlagNone), // Flags
-		types.IntPtrZero,                       // ProviderSpecificFlags
-		uintptr(unsafe.Pointer(&param)),        // Parameters
-		types.IntPtrZero,                       // Overlapped
-		uintptr(unsafe.Pointer(&handle)),       // handle
+		uintptr(unsafe.Pointer(&storageType)), // VirtualStorageType
+		uintptr(unsafe.Pointer(win32Path)),    // Path
+		uintptr(VirtualDiskAccessNone),        // VirtualDiskAccessMask (must be none if using struct v2)
+		types.IntPtrZero,                      // SecurityDescriptor
+		uintptr(CreateVirtualDiskFlagNone),    // Flags
+		types.IntPtrZero,                      // ProviderSpecificFlags
+		uintptr(unsafe.Pointer(&param)),       // Parameters
+		types.IntPtrZero,                      // Overlapped
+		uintptr(unsafe.Pointer(&handle)),      // handle
 	)
 	if !errors.Is(err, windows.ERROR_SUCCESS) {
 		return types.InvalidVDiskHandle, err

@@ -39,7 +39,7 @@ func GetVirtualDiskBackingFiles(drive types.Drive) ([]types.Path, error) {
 		_, _ = bytebuilder.Copy(b, &sdInfo)
 		errcode, _, _ := ffi.Virtdisk.GetStorageDependencyInformation.Call(
 			uintptr(diskHandle),
-			uintptr(ffi.GetStorageDependencyFlagHostVolumes|ffi.GetStorageDependencyFlagDiskHandle),
+			uintptr(GetStorageDependencyFlagHostVolumes|GetStorageDependencyFlagDiskHandle),
 			uintptr(bufSize),
 			uintptr(unsafe.Pointer(&b[0])),
 			uintptr(unsafe.Pointer(&bufSize)),

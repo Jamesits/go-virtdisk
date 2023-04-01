@@ -21,8 +21,8 @@ func TestCreateVhdx(t *testing.T) {
 
 	// CreateVirtualDisk with parameters V1
 	vsType := ffi.VirtualStorageType{
-		DeviceId: ffi.VirtualStorageTypeDeviceVhdx,
-		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
+		DeviceId: VirtualStorageTypeDeviceVhdx,
+		VendorId: VirtualStorageTypeVendorMicrosoft,
 	}
 	path, _ := windows.UTF16PtrFromString(filepath.Join(temporaryDirectory, "test.vhdx"))
 	param := ffi.CreateVirtualDiskParametersV2{
@@ -32,15 +32,15 @@ func TestCreateVhdx(t *testing.T) {
 	}
 	handle := types.IntPtrZero
 	ret1, _, err = ffi.Virtdisk.CreateVirtualDisk.Call(
-		uintptr(unsafe.Pointer(&vsType)),       // VirtualStorageType
-		uintptr(unsafe.Pointer(path)),          // Path
-		uintptr(ffi.VirtualDiskAccessNone),     // VirtualDiskAccessMask (must be none if using struct v2)
-		types.IntPtrZero,                       // SecurityDescriptor
-		uintptr(ffi.CreateVirtualDiskFlagNone), // Flags
-		types.IntPtrZero,                       // ProviderSpecificFlags
-		uintptr(unsafe.Pointer(&param)),        // Parameters
-		types.IntPtrZero,                       // Overlapped
-		uintptr(unsafe.Pointer(&handle)),       // handle
+		uintptr(unsafe.Pointer(&vsType)),   // VirtualStorageType
+		uintptr(unsafe.Pointer(path)),      // Path
+		uintptr(VirtualDiskAccessNone),     // VirtualDiskAccessMask (must be none if using struct v2)
+		types.IntPtrZero,                   // SecurityDescriptor
+		uintptr(CreateVirtualDiskFlagNone), // Flags
+		types.IntPtrZero,                   // ProviderSpecificFlags
+		uintptr(unsafe.Pointer(&param)),    // Parameters
+		types.IntPtrZero,                   // Overlapped
+		uintptr(unsafe.Pointer(&handle)),   // handle
 	)
 	fmt.Printf("handle = %v\n", handle)
 	assert.ErrorIs(t, err, windows.ERROR_SUCCESS)
@@ -56,7 +56,7 @@ func TestCreateVhdx(t *testing.T) {
 	ret1, _, err = ffi.Virtdisk.AttachVirtualDisk.Call(
 		handle,           // VirtualDiskHandle
 		types.IntPtrZero, // SecurityDescriptor
-		uintptr(ffi.AttachVirtualDiskFlagNoDriveLetter|ffi.AttachVirtualDiskFlagPermanentLifetime), // Flags
+		uintptr(AttachVirtualDiskFlagNoDriveLetter|AttachVirtualDiskFlagPermanentLifetime), // Flags
 		types.IntPtrZero, // ProviderSpecificFlags
 		types.IntPtrZero, // Parameters
 		types.IntPtrZero, // Overlapped
@@ -179,7 +179,7 @@ func TestCreateVhdx(t *testing.T) {
 	bufSize := uint32(0)
 	ret1, _, _ = ffi.Virtdisk.GetStorageDependencyInformation.Call(
 		uintptr(diskHandle),
-		uintptr(ffi.GetStorageDependencyFlagHostVolumes|ffi.GetStorageDependencyFlagDiskHandle),
+		uintptr(GetStorageDependencyFlagHostVolumes|GetStorageDependencyFlagDiskHandle),
 		uintptr(depSize),
 		uintptr(unsafe.Pointer(&bufferStorageDependencyInformationIn[0])),
 		uintptr(unsafe.Pointer(&bufSize)),
@@ -190,7 +190,7 @@ func TestCreateVhdx(t *testing.T) {
 	copy(bufferStorageDependencyInformationIn, versionOnly)
 	ret1, _, _ = ffi.Virtdisk.GetStorageDependencyInformation.Call(
 		uintptr(diskHandle),
-		uintptr(ffi.GetStorageDependencyFlagHostVolumes|ffi.GetStorageDependencyFlagDiskHandle),
+		uintptr(GetStorageDependencyFlagHostVolumes|GetStorageDependencyFlagDiskHandle),
 		uintptr(bufSize),
 		uintptr(unsafe.Pointer(&bufferStorageDependencyInformationIn[0])),
 		uintptr(unsafe.Pointer(&bufSize)),
@@ -219,7 +219,7 @@ func TestCreateVhdx(t *testing.T) {
 	// DetachVirtualDisk
 	ret1, _, err = ffi.Virtdisk.DetachVirtualDisk.Call(
 		handle,
-		uintptr(ffi.DetachVirtualDiskFlagNone),
+		uintptr(DetachVirtualDiskFlagNone),
 		types.IntPtrZero,
 	)
 	assert.ErrorIs(t, err, windows.ERROR_SUCCESS)

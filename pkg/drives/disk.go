@@ -1,6 +1,7 @@
 package drives
 
 import (
+	"bytes"
 	"github.com/jamesits/go-bytebuilder"
 	"github.com/jamesits/go-virtdisk/pkg/devices"
 	"github.com/jamesits/go-virtdisk/pkg/ffi"
@@ -36,6 +37,70 @@ func FromDevice(device types.Device) (types.Drive, error) {
 	}
 
 	return types.DriveFromId(n), nil
+}
+
+func FromVolume(volume types.Volume) (drives []types.Drive, err error) {
+	// https://stackoverflow.com/questions/29212597/how-to-enumerate-disk-volume-names
+	vp, err := volume.AsFileName()
+	if err != nil {
+		return nil, err
+	}
+
+	vHandle, err := windows.CreateFile(
+		vp,
+		// Even if GENERIC_READ is not specified, metadata can still be read; GENERIC_READ requires administrator privileges.
+		// https://stackoverflow.com/questions/327718/how-to-list-physical-disks#comment89593842_11683906
+		0,
+		windows.FILE_SHARE_READ|windows.FILE_SHARE_WRITE,
+		nil,
+		windows.OPEN_EXISTING,
+		windows.FILE_ATTRIBUTE_NORMAL,
+		windows.Handle(0),
+	)
+	if err != nil || vHandle == windows.InvalidHandle {
+		return nil, err
+	}
+	defer windows.CloseHandle(vHandle)
+
+	// https://stackoverflow.com/a/5664841
+	extents := ffi.VolumeDiskExtents{}
+	bytesReturned := uint32(unsafe.Sizeof(extents))
+
+	for i := 0; i < 2; i++ {
+		b := make([]byte, bytesReturned)
+		err = windows.DeviceIoControl(
+			vHandle,
+			ffi.IoctlVolumeGetVolumeDiskExtents,
+			nil,
+			0,
+			&b[0],
+			bytesReturned,
+			&bytesReturned,
+			nil,
+		)
+		if err != nil {
+			return nil, err
+		}
+		_ = bytebuilder.Unmarshal(b, &extents)
+		if bytesReturned > uint32(unsafe.Sizeof(extents)) {
+			continue
+		}
+
+		// parse extents
+		reader := bytes.NewReader(b)
+		header := ffi.VolumeDiskExtentsH{}
+		extent := ffi.DiskExtent{}
+		_, _ = bytebuilder.ReadPartial(reader, &header)
+		_, _ = bytebuilder.Skip(reader, 4)
+		for j := uint32(0); j < header.NumberOfDiskExtents; j++ {
+			_, _ = bytebuilder.ReadPartial(reader, &extent)
+			drives = append(drives, types.DriveFromId(extent.DiskNumber))
+		}
+
+		return
+	}
+
+	return nil, types.ErrorRetryLimitExceeded
 }
 
 func GetSerial(disk types.Drive) (string, error) {

@@ -13,14 +13,14 @@ import (
 // Implements:
 // - Mount-VHD
 func Mount(handle types.VDiskHandle, noDriveLetter bool, readOnly bool) (err error) {
-	flags := ffi.AttachVirtualDiskFlagNone
+	flags := AttachVirtualDiskFlagNone
 	if noDriveLetter {
-		flags |= ffi.AttachVirtualDiskFlagNoDriveLetter
+		flags |= AttachVirtualDiskFlagNoDriveLetter
 	}
 	if readOnly {
-		flags |= ffi.AttachVirtualDiskFlagReadOnly
+		flags |= AttachVirtualDiskFlagReadOnly
 	}
-	flags |= ffi.AttachVirtualDiskFlagPermanentLifetime
+	flags |= AttachVirtualDiskFlagPermanentLifetime
 
 	_, _, err = ffi.Virtdisk.AttachVirtualDisk.Call(
 		uintptr(handle),
@@ -42,7 +42,7 @@ func Mount(handle types.VDiskHandle, noDriveLetter bool, readOnly bool) (err err
 func Dismount(handle types.VDiskHandle) (err error) {
 	_, _, err = ffi.Virtdisk.DetachVirtualDisk.Call(
 		uintptr(handle),
-		uintptr(ffi.DetachVirtualDiskFlagNone),
+		uintptr(DetachVirtualDiskFlagNone),
 		types.IntPtrZero,
 	)
 	if !errors.Is(err, windows.ERROR_SUCCESS) {
