@@ -7,7 +7,8 @@ import (
 
 func Mount(volume types.Volume, mountPoint types.MountPoint) error {
 	// https://learn.microsoft.com/en-us/windows/win32/fileio/editing-drive-letter-assignments
-	win32VolumePath, err := volume.AsFileName()
+	// The online documentation is wrong (likely some escaping problem); volume name require backslash in the end.
+	win32VolumePath, err := volume.AsObjectPath()
 	if err != nil {
 		return err
 	}
