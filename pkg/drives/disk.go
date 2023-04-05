@@ -41,7 +41,7 @@ func FromDevice(device types.Device) (types.Drive, error) {
 
 func FromVolume(volume types.Volume) (drives []types.Drive, err error) {
 	// https://stackoverflow.com/questions/29212597/how-to-enumerate-disk-volume-names
-	vp, err := volume.AsFileName()
+	vp, err := volume.AsFileNameW()
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func FromVolume(volume types.Volume) (drives []types.Drive, err error) {
 }
 
 func GetSerial(disk types.Drive) (string, error) {
-	dp, err := disk.AsFileName()
+	dp, err := disk.AsFileNameW()
 	if err != nil {
 		return "", err
 	}

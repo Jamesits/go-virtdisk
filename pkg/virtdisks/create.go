@@ -18,7 +18,7 @@ func New(path types.Path, diskType ffi.VirtualStorageTypeDeviceType, sizeBytes u
 		DeviceId: diskType,
 		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
 	}
-	win32Path, err := path.AsFileName()
+	win32Path, err := path.AsFileNameW()
 	if err != nil {
 		return types.InvalidVDiskHandle, err
 	}
@@ -69,11 +69,11 @@ func Mirror(path types.Path, sourceDiskPath types.Path, diskType ffi.VirtualStor
 		DeviceId: diskType,
 		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
 	}
-	win32Path, err := path.AsFileName()
+	win32Path, err := path.AsFileNameW()
 	if err != nil {
 		return types.InvalidVDiskHandle, err
 	}
-	win32SourcePath, err := sourceDiskPath.AsFileName()
+	win32SourcePath, err := sourceDiskPath.AsFileNameW()
 	if err != nil {
 		return types.InvalidVDiskHandle, err
 	}

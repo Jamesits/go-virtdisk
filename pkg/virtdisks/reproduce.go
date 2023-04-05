@@ -20,11 +20,11 @@ func Fork(path types.Path, parentPath types.Path, diskType ffi.VirtualStorageTyp
 		DeviceId: diskType,
 		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
 	}
-	win32Path, err := path.AsFileName()
+	win32Path, err := path.AsFileNameW()
 	if err != nil {
 		return types.InvalidVDiskHandle, err
 	}
-	win32ParentPath, err := parentPath.AsFileName()
+	win32ParentPath, err := parentPath.AsFileNameW()
 	if err != nil {
 		return types.InvalidVDiskHandle, err
 	}

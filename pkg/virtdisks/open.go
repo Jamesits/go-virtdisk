@@ -15,7 +15,7 @@ func Open(path types.Path, fileType ffi.VirtualStorageTypeDeviceType, accessMask
 		DeviceId: fileType,
 		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
 	}
-	win32Path, err := path.AsFileName()
+	win32Path, err := path.AsFileNameW()
 	if err != nil {
 		return types.InvalidVDiskHandle, err
 	}

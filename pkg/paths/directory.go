@@ -26,7 +26,7 @@ func Mkdir(path types.Path) error {
 	cPath := vol
 	for _, seg := range segments {
 		cPath = types.MountPoint(strings.Join([]string{string(cPath), string(seg)}, types.PathSeparator))
-		win32cPath, err := cPath.AsFileName()
+		win32cPath, err := cPath.AsFileNameW()
 		if err != nil {
 			return err
 		}
@@ -58,7 +58,7 @@ func Rmdir(path types.Path) error {
 		return mountpoints.Dismount(vol)
 	}
 
-	win32Path, err := path.AsFileName()
+	win32Path, err := path.AsFileNameW()
 	if err != nil {
 		return err
 	}

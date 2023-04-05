@@ -5,11 +5,11 @@ import "fmt"
 // Drive path in the format of `\\.\PhysicalDrive0`.
 type Drive Path
 
-func (d Drive) AsFileName() (*uint16, error) {
+func (d Drive) AsFileNameW() (*uint16, error) {
 	return Path(d).asUTF16Ptr()
 }
 
-func (d Drive) AsObjectPath() (*uint16, error) {
+func (d Drive) AsObjectPathW() (*uint16, error) {
 	return Path(d).asUTF16Ptr()
 }
 

@@ -10,11 +10,11 @@ import (
 // https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-volume
 type Volume Path
 
-func (v Volume) AsFileName() (*uint16, error) {
+func (v Volume) AsFileNameW() (*uint16, error) {
 	// https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-volume
 	return windows.UTF16PtrFromString(strings.TrimRight(string(v), PathSeparator))
 }
 
-func (v Volume) AsObjectPath() (*uint16, error) {
+func (v Volume) AsObjectPathW() (*uint16, error) {
 	return Path(v).asUTF16Ptr()
 }

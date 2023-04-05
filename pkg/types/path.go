@@ -12,7 +12,22 @@ var PathSeparator = fmt.Sprintf("%c", os.PathSeparator)
 // Path represents a generic Windows path in the paths system, without assumption of its kind or existence.
 type Path string
 
-func (p Path) AsFileName() (*uint16, error) {
+func (p Path) AsDirectory() string {
+	if !strings.HasSuffix(string(p), PathSeparator) {
+		return string(p) + PathSeparator
+	}
+
+	return string(p)
+}
+
+func (p Path) AsFileName() string {
+	for strings.HasSuffix(string(p), PathSeparator) {
+		p = Path(strings.TrimSuffix(string(p), PathSeparator))
+	}
+	return string(p)
+}
+
+func (p Path) AsFileNameW() (*uint16, error) {
 	return p.asUTF16Ptr()
 }
 

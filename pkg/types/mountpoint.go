@@ -10,11 +10,11 @@ import (
 // - `\\.\C:\xxx\yyy`
 type MountPoint Path
 
-func (mp MountPoint) AsFileName() (*uint16, error) {
+func (mp MountPoint) AsFileNameW() (*uint16, error) {
 	return Path(mp).asUTF16Ptr()
 }
 
-func (mp MountPoint) AsDirectory() (*uint16, error) {
+func (mp MountPoint) AsDirectoryW() (*uint16, error) {
 	if !strings.HasSuffix(string(mp), PathSeparator) {
 		mp = mp + MountPoint(PathSeparator)
 	}

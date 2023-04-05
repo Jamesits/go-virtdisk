@@ -14,7 +14,7 @@ import (
 // GetVirtualDiskBackingFiles returns filesystem paths to all the virtual drives backing paths, sorted from the child to the parent.
 func GetVirtualDiskBackingFiles(drive types.Drive) ([]types.Path, error) {
 	var err error
-	win32SourcePath, err := drive.AsFileName()
+	win32SourcePath, err := drive.AsFileNameW()
 	if err != nil {
 		return nil, err
 	}

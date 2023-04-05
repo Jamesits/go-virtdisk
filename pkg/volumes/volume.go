@@ -30,7 +30,7 @@ func List() (ret []types.Volume, err error) {
 }
 
 func FromMountPoint(path types.MountPoint) (ret types.Volume, err error) {
-	v, err := path.AsFileName()
+	v, err := path.AsFileNameW()
 	if err != nil {
 		return "", err
 	}
@@ -45,7 +45,7 @@ func FromMountPoint(path types.MountPoint) (ret types.Volume, err error) {
 }
 
 func GetSerial(volume types.Volume) (ret string, err error) {
-	v, err := volume.AsObjectPath()
+	v, err := volume.AsObjectPathW()
 	if err != nil {
 		return "", err
 	}
@@ -69,7 +69,7 @@ func GetSerial(volume types.Volume) (ret string, err error) {
 }
 
 func GetLabel(volume types.Volume) (ret string, err error) {
-	v, err := volume.AsObjectPath()
+	v, err := volume.AsObjectPathW()
 	if err != nil {
 		return "", err
 	}
