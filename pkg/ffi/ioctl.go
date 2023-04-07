@@ -29,6 +29,7 @@ func CtlCode(DeviceType DeviceType, Function uint32, Method Method, Access Acces
 
 var (
 	IoctlDiskCreateDisk             = CtlCode(FileDeviceDisk, 0x0016, MethodBuffered, FileReadAccess|FileWriteAccess)
+	IoctlDiskSetDriveLayoutEx       = CtlCode(FileDeviceDisk, 0x0015, MethodBuffered, FileReadAccess|FileWriteAccess)
 	IoctlStorageGetDeviceNumber     = uint32(0x2d1080)
 	IoctlStorageQueryProperty       = uint32(0x2D1400)
 	IoctlVolumeGetVolumeDiskExtents = CtlCode(0x00000056, 0, MethodBuffered, FileAnyAccess)
