@@ -97,14 +97,14 @@ func getPhysicalPathUTF16(handle types.VDiskHandle) (path []uint16, err error) {
 	return virtualDiskPhysicalPathUtf16, nil
 }
 
-// GetPhysicalPath returns normalized drives path of a opened virtual drives.
+// GetPhysicalPath returns normalized drives path of an opened virtual drive.
 // Required permission: virtdisks.VirtualDiskAccessGetInfo
-func GetPhysicalPath(handle types.VDiskHandle) (path types.Path, err error) {
+func GetPhysicalPath(handle types.VDiskHandle) (path types.Drive, err error) {
 	p, err := getPhysicalPathUTF16(handle)
 	if err != nil {
 		return "", err
 	}
 
-	virtualDiskPhysicalPath := types.PathFromUTF16(p)
+	virtualDiskPhysicalPath := types.Drive(types.PathFromUTF16(p))
 	return virtualDiskPhysicalPath, nil
 }

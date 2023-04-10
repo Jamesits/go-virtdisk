@@ -24,7 +24,8 @@ func TestCreateVhdx(t *testing.T) {
 		DeviceId: ffi.VirtualStorageTypeDeviceVhdx,
 		VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
 	}
-	path, _ := windows.UTF16PtrFromString(filepath.Join(temporaryDirectory, "test.vhdx"))
+	p := filepath.Join(temporaryDirectory, "test.vhdx")
+	path, _ := windows.UTF16PtrFromString(p)
 	param := ffi.CreateVirtualDiskParametersV2{
 		Version:     ffi.Version{Version: 2},
 		UniqueId:    uuid.Nil,

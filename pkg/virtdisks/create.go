@@ -29,12 +29,7 @@ func New(path types.Path, diskType ffi.VirtualStorageTypeDeviceType, sizeBytes u
 		BlockSizeInBytes:          blockSizeBytes,
 		SectorSizeInBytes:         logicalSectorSizeBytes,
 		PhysicalSectorSizeInBytes: physicalSectorSizeBytes,
-		ParentPath:                nil,
-		SourcePath:                nil,
 		OpenFlags:                 ffi.OpenVirtualDiskFlagNone,
-		ParentVirtualStorageType:  ffi.VirtualStorageType{},
-		SourceVirtualStorageType:  ffi.VirtualStorageType{},
-		ResiliencyGuid:            uuid.Nil,
 	}
 	createVirtualDiskFlag := ffi.CreateVirtualDiskFlagNone
 	if dynamic {
@@ -84,12 +79,12 @@ func Mirror(path types.Path, sourceDiskPath types.Path, diskType ffi.VirtualStor
 		BlockSizeInBytes:          blockSizeBytes,
 		SectorSizeInBytes:         0,
 		PhysicalSectorSizeInBytes: 0,
-		ParentPath:                nil,
 		SourcePath:                win32SourcePath,
 		OpenFlags:                 ffi.OpenVirtualDiskFlagNone,
-		ParentVirtualStorageType:  ffi.VirtualStorageType{},
-		SourceVirtualStorageType:  ffi.VirtualStorageType{},
-		ResiliencyGuid:            uuid.Nil,
+		SourceVirtualStorageType: ffi.VirtualStorageType{
+			DeviceId: diskType,
+			VendorId: ffi.VirtualStorageTypeVendorMicrosoft,
+		},
 	}
 	createVirtualDiskFlag := ffi.CreateVirtualDiskFlagNone
 	if dynamic {
