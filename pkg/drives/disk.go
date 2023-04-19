@@ -2,6 +2,7 @@ package drives
 
 import (
 	"bytes"
+	"errors"
 	"github.com/jamesits/go-bytebuilder"
 	"github.com/jamesits/go-virtdisk/pkg/devices"
 	"github.com/jamesits/go-virtdisk/pkg/ffi"
@@ -163,4 +164,52 @@ func GetSerial(disk types.Drive) (string, error) {
 	}
 
 	return "", types.ErrorRetryLimitExceeded
+}
+
+func Writable(disk types.Drive) (bool, error) {
+	dp, err := disk.AsFileNameW()
+	if err != nil {
+		return false, err
+	}
+
+	dHandle, err := windows.CreateFile(
+		dp,
+		// Even if GENERIC_READ is not specified, metadata can still be read; GENERIC_READ requires administrator privileges.
+		// https://stackoverflow.com/questions/327718/how-to-list-physical-disks#comment89593842_11683906
+		0,
+		windows.FILE_SHARE_READ,
+		nil,
+		windows.OPEN_EXISTING,
+		windows.FILE_ATTRIBUTE_NORMAL,
+		windows.Handle(0),
+	)
+	if err != nil || dHandle == windows.InvalidHandle {
+		return false, err
+	}
+	defer windows.CloseHandle(dHandle)
+
+	// https://learn.microsoft.com/en-us/windows/win32/api/winioctl/ni-winioctl-ioctl_disk_is_writable
+	err = windows.DeviceIoControl(
+		dHandle,
+		ffi.IoctlDiskIsWritable,
+		nil,
+		0,
+		nil,
+		0,
+		nil,
+		nil,
+	)
+	if errors.Is(err, windows.ERROR_WRITE_PROTECT) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+
+	return true, err
+}
+
+func Readonly(disk types.Drive) (bool, error) {
+	b, e := Writable(disk)
+	return !b, e
 }

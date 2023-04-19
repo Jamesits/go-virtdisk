@@ -15,5 +15,9 @@ func TestGetDisk(t *testing.T) {
 		serial, err := GetSerial(disk)
 		assert.NoError(t, err)
 		fmt.Printf("\tSerial: \"%s\"\n", serial)
+
+		writable, err := Writable(disk)
+		assert.NoError(t, err)
+		fmt.Printf("\tWritable: %v\n", writable)
 	}
 }
