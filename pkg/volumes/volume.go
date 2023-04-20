@@ -91,3 +91,22 @@ func GetLabel(volume types.Volume) (ret string, err error) {
 
 	return windows.UTF16ToString(b), nil
 }
+
+func GetFlags(volume types.Volume) (ret uint32, err error) {
+	v, err := volume.AsObjectPathW()
+	if err != nil {
+		return 0, err
+	}
+
+	err = windows.GetVolumeInformation(
+		v,
+		(*uint16)(nil),
+		0,
+		(*uint32)(nil),
+		(*uint32)(nil),
+		&ret,
+		(*uint16)(nil),
+		0,
+	)
+	return
+}
