@@ -13,6 +13,8 @@ import (
 // Implements:
 // - New-VHD -Dynamic
 // - New-VHD -Fixed
+// Notes:
+// - sizeBytes must be dividable by blockSizeBytes (by default 512), otherwise it returns windows.ERROR_FILE_NOT_FOUND
 func New(path types.Path, diskType ffi.VirtualStorageTypeDeviceType, sizeBytes uint64, dynamic bool, blockSizeBytes uint32, logicalSectorSizeBytes uint32, physicalSectorSizeBytes uint32) (handle types.VDiskHandle, err error) {
 	storageType := ffi.VirtualStorageType{
 		DeviceId: diskType,
@@ -32,10 +34,8 @@ func New(path types.Path, diskType ffi.VirtualStorageTypeDeviceType, sizeBytes u
 		OpenFlags:                 ffi.OpenVirtualDiskFlagNone,
 	}
 	createVirtualDiskFlag := ffi.CreateVirtualDiskFlagNone
-	if dynamic {
+	if !dynamic {
 		createVirtualDiskFlag |= ffi.CreateVirtualDiskFlagFullPhysicalAllocation
-	} else {
-		createVirtualDiskFlag |= ffi.CreateVirtualDiskFlagSparseFile
 	}
 
 	_, _, err = ffi.Virtdisk.CreateVirtualDisk.Call(
