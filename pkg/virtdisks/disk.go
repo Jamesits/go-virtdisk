@@ -52,7 +52,7 @@ func GetVirtualDiskBackingFiles(drive types.Drive) ([]types.Path, error) {
 			return nil, nil
 		}
 		if errcode != uintptr(windows.ERROR_SUCCESS) {
-			return nil, err
+			return nil, windows.Errno(errcode)
 		}
 
 		// parse data
